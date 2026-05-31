@@ -2,7 +2,10 @@ import pygame as py, os, time
 
 py.init()
 
-screen = py.display.set_mode([400, 400])
+HEIGHT = 400
+WIDTH = 400
+
+screen = py.display.set_mode((WIDTH, HEIGHT))
 WHITE = [255, 255, 255]
 GREEN = [118, 150, 86]
 BLACK = [0,0,0]
@@ -13,37 +16,7 @@ running = True
 clock = py.time.Clock()
 clock.tick(60)
 
-
-# import chess pieces images
-black_king = py.image.load("Pieces/Black King.svg").convert_alpha()
-black_king = py.transform.scale(black_king, (50,50))
-black_queen = py.image.load("Pieces/Black Queen.svg").convert_alpha()
-black_queen = py.transform.scale(black_queen, (50,50))
-black_bishop = py.image.load("Pieces/Black Bishop.svg").convert_alpha()
-black_bishop = py.transform.scale(black_bishop, (50,50))
-black_knight = py.image.load("Pieces/Black Knight.svg").convert_alpha()
-black_knight = py.transform.scale(black_knight, (50,50))
-black_rook = py.image.load("Pieces/Black Rook.svg").convert_alpha()
-black_rook = py.transform.scale(black_rook, (50, 50))
-black_pawn = py.image.load("Pieces/Black Pawn.svg").convert_alpha()
-black_pawn = py.transform.scale(black_pawn, (50,50))
-white_king = py.image.load("Pieces/White King.svg").convert_alpha()
-white_king = py.transform.scale(white_king, (50, 50))
-white_queen = py.image.load("Pieces/White Queen.svg").convert_alpha()
-white_queen = py.transform.scale(white_queen, (50, 50))
-white_bishop = py.image.load("Pieces/White Bishop.svg").convert_alpha()
-white_bishop = py.transform.scale(white_bishop, (50, 50))
-white_knight = py.image.load("Pieces/White Knight.svg").convert_alpha()
-white_knight = py.transform.scale(white_knight, (50, 50))
-white_rook = py.image.load("Pieces/White Rook.svg").convert_alpha()
-white_rook = py.transform.scale(white_rook, (50, 50))
-white_pawn = py.image.load("Pieces/White Pawn.svg").convert_alpha()
-white_pawn = py.transform.scale(white_pawn, (50, 50))
-
-while running:
-    for event in py.event.get():
-        if event.type == py.QUIT:
-            running = False
+def draw_board():
 # A
     A8 = py.draw.rect(screen, WHITE, (0, 0, 50, 50))
     A7 = py.draw.rect(screen, GREEN, (0, 50, 50, 50))
@@ -117,29 +90,56 @@ while running:
     H2 = py.draw.rect(screen, GREEN, (350, 300, 50, 50))
     H1 = py.draw.rect(screen, WHITE, (350, 350, 50, 50))
 
-    # load the chess pieces images
-    screen.blit(black_king, (200, 0))
-    screen.blit(black_queen, (150, 0))
-    screen.blit(black_bishop, (250, 0))
-    screen.blit(black_bishop, (100, 0))
-    screen.blit(black_knight, (300, 0))
-    screen.blit(black_knight, (50, 0))
-    screen.blit(black_rook, (0, 0))
-    screen.blit(black_rook, (350, 0))
-    for i in range (8):
-        screen.blit(black_pawn, (50*i, 50))
-    screen.blit(white_king, (200, 350))
+# position of pieces on the board
+board = [
+    ["Black Rook", "Black Knight", "Black Bishop", "Black Queen", "Black King", "Black Bishop", "Black Knight", "Black Rook"],
+    ["Black Pawn", "Black Pawn", "Black Pawn", "Black Pawn", "Black Pawn", "Black Pawn", "Black Pawn", "Black Pawn",],
+    ["Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty",],
+    ["Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty",],
+    ["Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty",],
+    ["Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty", "Empty",],
+    ["White Pawn", "White Pawn", "White Pawn", "White Pawn", "White Pawn", "White Pawn", "White Pawn", "White Pawn",],
+    ["White Rook", "White Knight", "White Bishop", "White Queen", "White King", "White Bishop", "White Knight", "White Rook"]
+]
+# import chess pieces images
 
-    screen.blit(white_king, (200, 350))
-    screen.blit(white_queen, (150, 350))
-    screen.blit(white_bishop, (250, 350))
-    screen.blit(white_bishop, (100, 350))
-    screen.blit(white_knight, (300, 350))
-    screen.blit(white_knight, (50, 350))
-    screen.blit(white_rook, (0, 350))
-    screen.blit(white_rook, (350, 350))
-    for i in range (8):
-        screen.blit(white_pawn, (50*i, 300))
+images = {}
+pieces = ["Black King", "Black Queen", "Black Bishop", "Black Knight", "Black Rook", "Black Pawn",
+          "White King", "White Queen", "White Bishop", "White Knight", "White Rook", "White Pawn"]
+filename = {
+    "Black King" : "Pieces/Black King.svg",
+    "Black Queen" : "Pieces/Black Queen.svg",
+    "Black Bishop" : "Pieces/Black Bishop.svg",
+    "Black Knight" : "Pieces/Black Knight.svg",
+    "Black Rook" : "Pieces/Black Rook.svg",
+    "Black Pawn" : "Pieces/Black Pawn.svg",
+    "White King" : "Pieces/White King.svg",
+    "White Queen" : "Pieces/White Queen.svg",
+    "White Bishop" : "Pieces/White Bishop.svg",
+    "White Knight" : "Pieces/White Knight.svg",
+    "White Rook" : "Pieces/White Rook.svg",
+    "White Pawn" : "Pieces/White Pawn.svg"
+}
+
+for piece in pieces:
+    images[piece] = py.image.load(filename[piece]).convert_alpha()
+    images[piece] = py.transform.scale(images[piece], (50, 50) )
+
+
+while running:
+    for event in py.event.get():
+        if event.type == py.QUIT:
+            running = False
+    draw_board()
+
+
+    # load the chess pieces images
+    for row in range(8):
+        for column in range(8):
+            # checks for piece on the board
+            piece = board[row][column]
+            if piece != "Empty":
+                screen.blit(images[piece], ((column*50), (row*50)))
 
     py.display.flip()
     clock.tick(60)
