@@ -8,7 +8,6 @@ WIDTH = 400
 screen = py.display.set_mode((WIDTH, HEIGHT))
 WHITE = [255, 255, 255]
 GREEN = [118, 150, 86]
-BLACK = [0,0,0]
 
 
 py.display.set_caption("Test1")
@@ -17,6 +16,7 @@ clock = py.time.Clock()
 clock.tick(60)
 
 def draw_board():
+    """Draw the board"""
 # A
     A8 = py.draw.rect(screen, WHITE, (0, 0, 50, 50))
     A7 = py.draw.rect(screen, GREEN, (0, 50, 50, 50))
@@ -90,6 +90,15 @@ def draw_board():
     H2 = py.draw.rect(screen, GREEN, (350, 300, 50, 50))
     H1 = py.draw.rect(screen, WHITE, (350, 350, 50, 50))
 
+def display_pieces():
+    """Display the pieces on the board"""
+    for row in range(8):
+        for column in range(8):
+            # checks for piece on the board
+            piece = board[row][column]
+            if piece != "Empty":
+                screen.blit(images[piece], ((column*50), (row*50)))
+
 # position of pieces on the board
 board = [
     ["Black Rook", "Black Knight", "Black Bishop", "Black Queen", "Black King", "Black Bishop", "Black Knight", "Black Rook"],
@@ -150,20 +159,41 @@ while running:
                 starting_row, starting_column = clicked_square
 
                 move_piece = board[starting_row][starting_column]
-                board[clicked_row][clicked_column] = move_piece
-                if clicked_square != (clicked_row, clicked_column):
-                    board[starting_row][starting_column] = "Empty"
+
+
+                # Pawn movement
+                if move_piece == "White Pawn" or move_piece == "Black Pawn" :
+                    if clicked_square[1] == clicked_column:
+                        board[clicked_row][clicked_column] = move_piece
+                        if clicked_square != (clicked_row, clicked_column):
+                            board[starting_row][starting_column] = "Empty"
+
+                # Rook movement
+                if move_piece == "White Rook" or move_piece == "Black Rook":
+                    if clicked_square[1] == clicked_column or clicked_square[0] == clicked_row:
+                        board[clicked_row][clicked_column] = move_piece
+                        if clicked_square != (clicked_row, clicked_column):
+                            board[starting_row][starting_column] = "Empty"
+
+                # Bishop movement 
+                if move_piece == "White Bishop" or move_piece == "Black Bishop":
+                    if clicked_square[1] == clicked_row or clicked_square[0] == clicked_column:
+                        board[clicked_row][clicked_column] = move_piece
+                        if clicked_square != (clicked_row, clicked_column):
+                            board[starting_row][starting_column] = "Empty"
+                # Queen movement
+                if move_piece == "White Queen" or move_piece == "Black Queen":
+                    if clicked_square[1] == clicked_column or clicked_square[0] == clicked_row:
+                        board[clicked_row][clicked_column] = move_piece
+                        if clicked_square != (clicked_row, clicked_column):
+                            board[starting_row][starting_column] = "Empty"
+
+                            
                 clicked_square = None
 
     draw_board()
 
-    # load the chess pieces images
-    for row in range(8):
-        for column in range(8):
-            # checks for piece on the board
-            piece = board[row][column]
-            if piece != "Empty":
-                screen.blit(images[piece], ((column*50), (row*50)))
+    display_pieces()
 
     py.display.flip()
     clock.tick(60)
