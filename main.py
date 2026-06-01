@@ -126,12 +126,36 @@ for piece in pieces:
     images[piece] = py.transform.scale(images[piece], (50, 50) )
 
 
+clicked_square = None
+
 while running:
     for event in py.event.get():
         if event.type == py.QUIT:
             running = False
-    draw_board()
 
+        elif event.type == py.MOUSEBUTTONDOWN:
+            
+            x_pos, y_pos = py.mouse.get_pos()
+
+            clicked_column = x_pos // 50
+            clicked_row = y_pos // 50
+
+            if clicked_square is None:
+                piece = board[clicked_row][clicked_column]
+
+                if piece != "Empty":
+                    clicked_square = (clicked_row, clicked_column)
+
+            else:
+                starting_row, starting_column = clicked_square
+
+                move_piece = board[starting_row][starting_column]
+                board[clicked_row][clicked_column] = move_piece
+                if clicked_square != (clicked_row, clicked_column):
+                    board[starting_row][starting_column] = "Empty"
+                clicked_square = None
+
+    draw_board()
 
     # load the chess pieces images
     for row in range(8):
