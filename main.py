@@ -132,7 +132,7 @@ filename = {
 
 for piece in pieces:
     images[piece] = py.image.load(filename[piece]).convert_alpha()
-    images[piece] = py.transform.scale(images[piece], (50, 50) )
+    images[piece] = py.transform.scale(images[piece], (50, 50))
 
 
 clicked_square = None
@@ -177,18 +177,36 @@ while running:
 
                 # Bishop movement 
                 if move_piece == "White Bishop" or move_piece == "Black Bishop":
-                    if clicked_square[1] == clicked_row or clicked_square[0] == clicked_column:
+                    if abs(clicked_square[0] - clicked_row) == abs(clicked_square[1] - clicked_column):
                         board[clicked_row][clicked_column] = move_piece
                         if clicked_square != (clicked_row, clicked_column):
                             board[starting_row][starting_column] = "Empty"
+
                 # Queen movement
                 if move_piece == "White Queen" or move_piece == "Black Queen":
                     if clicked_square[1] == clicked_column or clicked_square[0] == clicked_row:
                         board[clicked_row][clicked_column] = move_piece
                         if clicked_square != (clicked_row, clicked_column):
                             board[starting_row][starting_column] = "Empty"
+                    elif abs(clicked_square[0] - clicked_row) == abs(clicked_square[1] - clicked_column):
+                        board[clicked_row][clicked_column] = move_piece
+                        if clicked_square != (clicked_row, clicked_column):
+                            board[starting_row][starting_column] = "Empty"
 
-                            
+                # Knight movement
+                if move_piece == "White Knight" or move_piece == "Black Knight":
+                    if clicked_square[0] == clicked_row + 2 or clicked_square == clicked_row - 2:
+                        if clicked_square[1] == clicked_column + 1 or clicked_square[1] == clicked_column - 1:
+                            board[clicked_row][clicked_column] = move_piece
+                            if clicked_square != (clicked_row, clicked_column):
+                                board[starting_row][starting_column] = "Empty"
+
+                    elif clicked_square[0] == clicked_row + 1 or clicked_square[0] == clicked_row -1:
+                        if clicked_square[1] == clicked_column + 2 or clicked_square[1] == clicked_column + 2:
+                            board[clicked_row][clicked_column] = move_piece
+                            if clicked_square != (clicked_row, clicked_column):
+                                board[starting_row][starting_column] = "Empty"
+
                 clicked_square = None
 
     draw_board()
