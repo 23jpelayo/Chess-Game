@@ -156,6 +156,7 @@ while running:
                     clicked_square = (clicked_row, clicked_column)
 
             else:
+                # After the second click, the previous location of the piece is stored in starting_row and swtarting_column
                 starting_row, starting_column = clicked_square
 
                 move_piece = board[starting_row][starting_column]
@@ -163,67 +164,75 @@ while running:
 
                 # Pawn movement
                 if move_piece == "White Pawn" or move_piece == "Black Pawn" :
-                    if clicked_square[1] == clicked_column:
+                    # prevent the pawn from taking a piece in the same column. it can only take diagonally
+                    if starting_column == clicked_column and board[clicked_row][starting_column] == "Empty":
                         # prevent the pawn from moving backwards
                         if move_piece == "White Pawn":
-                            if clicked_square[0] > clicked_row: 
+                            # pawn can only move two squares on its first move
+                            if starting_row - clicked_row == 1 or starting_row == 6 and starting_row - clicked_row == 2: 
                                 board[clicked_row][clicked_column] = move_piece
                                 if clicked_square != (clicked_row, clicked_column):
                                     board[starting_row][starting_column] = "Empty"
                         else:
-                            if clicked_square[0] < clicked_row: 
+                            # if there is a piece one square diagonal to the pawn, it will be able to take it
+                            if clicked_row - starting_row == 1 or starting_row == 1 and clicked_row - starting_row == 2: 
                                 board[clicked_row][clicked_column] = move_piece
                                 if clicked_square != (clicked_row, clicked_column):
                                     board[starting_row][starting_column] = "Empty"
 
+                    elif starting_column == clicked_column + 1 or starting_column == clicked_column - 1:
+                        if board[clicked_row][clicked_column] != "Empty":
+                            board[clicked_row][clicked_column] = move_piece
+                            board[starting_row][starting_column] = "Empty"
+
                 # Rook movement
                 if move_piece == "White Rook" or move_piece == "Black Rook":
-                    if clicked_square[1] == clicked_column or clicked_square[0] == clicked_row:
+                    if starting_column == clicked_column or starting_row == clicked_row:
                         board[clicked_row][clicked_column] = move_piece
                         if clicked_square != (clicked_row, clicked_column):
                             board[starting_row][starting_column] = "Empty"
 
                 # Bishop movement 
                 if move_piece == "White Bishop" or move_piece == "Black Bishop":
-                    if abs(clicked_square[0] - clicked_row) == abs(clicked_square[1] - clicked_column):
+                    if abs(starting_row - clicked_row) == abs(starting_column - clicked_column):
                         board[clicked_row][clicked_column] = move_piece
                         if clicked_square != (clicked_row, clicked_column):
                             board[starting_row][starting_column] = "Empty"
 
                 # Queen movement
                 if move_piece == "White Queen" or move_piece == "Black Queen":
-                    if clicked_square[1] == clicked_column or clicked_square[0] == clicked_row:
+                    if starting_column == clicked_column or starting_row == clicked_row:
                         board[clicked_row][clicked_column] = move_piece
                         if clicked_square != (clicked_row, clicked_column):
                             board[starting_row][starting_column] = "Empty"
-                    elif abs(clicked_square[0] - clicked_row) == abs(clicked_square[1] - clicked_column):
+                    elif abs(starting_row - clicked_row) == abs(starting_column - clicked_column):
                         board[clicked_row][clicked_column] = move_piece
                         if clicked_square != (clicked_row, clicked_column):
                             board[starting_row][starting_column] = "Empty"
 
                 # King movement
                 if move_piece == "White King" or move_piece == "Black King":
-                    if clicked_square[1] == clicked_column or clicked_square[0] == clicked_row:
-                        if clicked_row == clicked_square[0] + 1 or clicked_row == clicked_square[0] - 1 or clicked_column == clicked_square[1] + 1 or clicked_column == clicked_square[1] - 1:
+                    if starting_column == clicked_column or starting_row == clicked_row:
+                        if clicked_row == starting_row + 1 or clicked_row == starting_row - 1 or clicked_column == starting_column + 1 or clicked_column == starting_column - 1:
                             board[clicked_row][clicked_column] = move_piece
                             if clicked_square != (clicked_row, clicked_column):
                                 board[starting_row][starting_column] = "Empty"
-                    elif abs(clicked_square[0] - clicked_row) == abs(clicked_square[1] - clicked_column):
-                        if clicked_row == clicked_square[0] + 1 or clicked_row == clicked_square[0] -1:
+                    elif abs(starting_row - clicked_row) == abs(starting_column - clicked_column):
+                        if clicked_row == starting_row + 1 or clicked_row == starting_row -1:
                             board[clicked_row][clicked_column] = move_piece
                             if clicked_square != (clicked_row, clicked_column):
                                 board[starting_row][starting_column] = "Empty"
 
                 # Knight movement
                 if move_piece == "White Knight" or move_piece == "Black Knight":
-                    if clicked_square[0] == clicked_row + 2 or clicked_square[0] == clicked_row - 2:
-                        if clicked_square[1] == clicked_column + 1 or clicked_square[1] == clicked_column - 1:
+                    if starting_row == clicked_row + 2 or starting_row == clicked_row - 2:
+                        if starting_column == clicked_column + 1 or starting_column == clicked_column - 1:
                             board[clicked_row][clicked_column] = move_piece
                             if clicked_square != (clicked_row, clicked_column):
                                 board[starting_row][starting_column] = "Empty"
 
-                    elif clicked_square[0] == clicked_row + 1 or clicked_square[0] == clicked_row - 1:
-                        if clicked_square[1] == clicked_column + 2 or clicked_square[1] == clicked_column - 2:
+                    elif starting_row == clicked_row + 1 or starting_row == clicked_row - 1:
+                        if starting_column == clicked_column + 2 or starting_column == clicked_column - 2:
                             board[clicked_row][clicked_column] = move_piece
                             if clicked_square != (clicked_row, clicked_column):
                                 board[starting_row][starting_column] = "Empty"
