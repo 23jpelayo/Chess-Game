@@ -216,14 +216,14 @@ while running:
 
                 # Knight movement
                 if move_piece == "White Knight" or move_piece == "Black Knight":
-                    if clicked_square[0] == clicked_row + 2 or clicked_square == clicked_row - 2:
+                    if clicked_square[0] == clicked_row + 2 or clicked_square[0] == clicked_row - 2:
                         if clicked_square[1] == clicked_column + 1 or clicked_square[1] == clicked_column - 1:
                             board[clicked_row][clicked_column] = move_piece
                             if clicked_square != (clicked_row, clicked_column):
                                 board[starting_row][starting_column] = "Empty"
 
-                    elif clicked_square[0] == clicked_row + 1 or clicked_square[0] == clicked_row -1:
-                        if clicked_square[1] == clicked_column + 2 or clicked_square[1] == clicked_column + 2:
+                    elif clicked_square[0] == clicked_row + 1 or clicked_square[0] == clicked_row - 1:
+                        if clicked_square[1] == clicked_column + 2 or clicked_square[1] == clicked_column - 2:
                             board[clicked_row][clicked_column] = move_piece
                             if clicked_square != (clicked_row, clicked_column):
                                 board[starting_row][starting_column] = "Empty"
