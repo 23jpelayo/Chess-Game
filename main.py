@@ -113,8 +113,8 @@ board = [
 # import chess pieces images
 
 images = {}
-pieces = ["Black King", "Black Queen", "Black Bishop", "Black Knight", "Black Rook", "Black Pawn",
-          "White King", "White Queen", "White Bishop", "White Knight", "White Rook", "White Pawn"]
+black_pieces = ["Black King", "Black Queen", "Black Bishop", "Black Knight", "Black Rook", "Black Pawn"]
+white_pieces = ["White King", "White Queen", "White Bishop", "White Knight", "White Rook", "White Pawn"]
 filename = {
     "Black King" : "Pieces/Black King.svg",
     "Black Queen" : "Pieces/Black Queen.svg",
@@ -130,7 +130,11 @@ filename = {
     "White Pawn" : "Pieces/White Pawn.svg"
 }
 
-for piece in pieces:
+for piece in black_pieces:
+    images[piece] = py.image.load(filename[piece]).convert_alpha()
+    images[piece] = py.transform.scale(images[piece], (50, 50))
+
+for piece in white_pieces:
     images[piece] = py.image.load(filename[piece]).convert_alpha()
     images[piece] = py.transform.scale(images[piece], (50, 50))
 
@@ -176,66 +180,138 @@ while running:
                         else:
                             # if there is a piece one square diagonal to the pawn, it will be able to take it
                             if clicked_row - starting_row == 1 or starting_row == 1 and clicked_row - starting_row == 2: 
-                                board[clicked_row][clicked_column] = move_piece
-                                if clicked_square != (clicked_row, clicked_column):
-                                    board[starting_row][starting_column] = "Empty"
+                                if move_piece == "White Pawn":
+                                    if board[clicked_row][clicked_column] not in white_pieces:
+                                        board[clicked_row][clicked_column] = move_piece
+                                        if clicked_square != (clicked_row, clicked_column):
+                                            board[starting_row][starting_column] = "Empty"
+                                else:
+                                    if board[clicked_row][clicked_column] not in black_pieces:
+                                        board[clicked_row][clicked_column] = move_piece
+                                        if clicked_square != (clicked_row, clicked_column):
+                                            board[starting_row][starting_column] = "Empty"
 
                     elif starting_column == clicked_column + 1 or starting_column == clicked_column - 1:
                         if board[clicked_row][clicked_column] != "Empty":
-                            board[clicked_row][clicked_column] = move_piece
-                            board[starting_row][starting_column] = "Empty"
+                            if move_piece == "White Pawn":
+                                if board[clicked_row][clicked_column] not in white_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
+                            else:
+                                if board[clicked_row][clicked_column] not in black_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
 
                 # Rook movement
                 if move_piece == "White Rook" or move_piece == "Black Rook":
                     if starting_column == clicked_column or starting_row == clicked_row:
-                        board[clicked_row][clicked_column] = move_piece
-                        if clicked_square != (clicked_row, clicked_column):
-                            board[starting_row][starting_column] = "Empty"
+                        if move_piece == "White Rook":
+                            if board[clicked_row][clicked_column] not in white_pieces:
+                                board[clicked_row][clicked_column] = move_piece
+                                if clicked_square != (clicked_row, clicked_column):
+                                    board[starting_row][starting_column] = "Empty"
+
+                        else:
+                            if board[clicked_row][clicked_column] not in black_pieces:
+                                board[clicked_row][clicked_column] = move_piece
+                                if clicked_square != (clicked_row, clicked_column):
+                                    board[starting_row][starting_column] = "Empty"
 
                 # Bishop movement 
                 if move_piece == "White Bishop" or move_piece == "Black Bishop":
                     if abs(starting_row - clicked_row) == abs(starting_column - clicked_column):
-                        board[clicked_row][clicked_column] = move_piece
-                        if clicked_square != (clicked_row, clicked_column):
-                            board[starting_row][starting_column] = "Empty"
+                        if move_piece == "White Bishop":
+                            if board[clicked_row][clicked_column] not in white_pieces:
+                                board[clicked_row][clicked_column] = move_piece
+                                if clicked_square != (clicked_row, clicked_column):
+                                    board[starting_row][starting_column] = "Empty"
+                        else:
+                            if board[clicked_row][clicked_column] not in black_pieces:
+                                board[clicked_row][clicked_column] = move_piece
+                                if clicked_square != (clicked_row, clicked_column):
+                                    board[starting_row][starting_column] = "Empty"
 
                 # Queen movement
                 if move_piece == "White Queen" or move_piece == "Black Queen":
                     if starting_column == clicked_column or starting_row == clicked_row:
-                        board[clicked_row][clicked_column] = move_piece
-                        if clicked_square != (clicked_row, clicked_column):
-                            board[starting_row][starting_column] = "Empty"
+                        if move_piece == "White Queen":
+                            if board[clicked_row][clicked_column] not in white_pieces:
+                                board[clicked_row][clicked_column] = move_piece
+                                if clicked_square != (clicked_row, clicked_column):
+                                    board[starting_row][starting_column] = "Empty"
+                        else:
+                            if board[clicked_row][clicked_column] not in black_pieces:
+                                board[clicked_row][clicked_column] = move_piece
+                                if clicked_square != (clicked_row, clicked_column):
+                                    board[starting_row][starting_column] = "Empty"
                     elif abs(starting_row - clicked_row) == abs(starting_column - clicked_column):
-                        board[clicked_row][clicked_column] = move_piece
-                        if clicked_square != (clicked_row, clicked_column):
-                            board[starting_row][starting_column] = "Empty"
+                        if move_piece == "White Queen":
+                            if board[clicked_row][clicked_column] not in white_pieces:
+                                board[clicked_row][clicked_column] = move_piece
+                                if clicked_square != (clicked_row, clicked_column):
+                                    board[starting_row][starting_column] = "Empty"
+                        else:
+                            if board[clicked_row][clicked_column] not in black_pieces:
+                                board[clicked_row][clicked_column] = move_piece
+                                if clicked_square != (clicked_row, clicked_column):
+                                    board[starting_row][starting_column] = "Empty"
 
                 # King movement
                 if move_piece == "White King" or move_piece == "Black King":
                     if starting_column == clicked_column or starting_row == clicked_row:
                         if clicked_row == starting_row + 1 or clicked_row == starting_row - 1 or clicked_column == starting_column + 1 or clicked_column == starting_column - 1:
-                            board[clicked_row][clicked_column] = move_piece
-                            if clicked_square != (clicked_row, clicked_column):
-                                board[starting_row][starting_column] = "Empty"
+                            if move_piece == "White King":
+                                if board[clicked_row][clicked_column] not in white_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
+                            else:
+                                if board[clicked_row][clicked_column] not in black_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
                     elif abs(starting_row - clicked_row) == abs(starting_column - clicked_column):
                         if clicked_row == starting_row + 1 or clicked_row == starting_row -1:
-                            board[clicked_row][clicked_column] = move_piece
-                            if clicked_square != (clicked_row, clicked_column):
-                                board[starting_row][starting_column] = "Empty"
+                            if move_piece == "White King":
+                                if board[clicked_row][clicked_column] not in white_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
+                            else:
+                                if board[clicked_row][clicked_column] not in black_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
 
                 # Knight movement
                 if move_piece == "White Knight" or move_piece == "Black Knight":
                     if starting_row == clicked_row + 2 or starting_row == clicked_row - 2:
                         if starting_column == clicked_column + 1 or starting_column == clicked_column - 1:
-                            board[clicked_row][clicked_column] = move_piece
-                            if clicked_square != (clicked_row, clicked_column):
-                                board[starting_row][starting_column] = "Empty"
+                            if move_piece == "White Knight":
+                                if board[clicked_row][clicked_column] not in white_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
+                            else:
+                                if board[clicked_row][clicked_column] not in black_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
 
                     elif starting_row == clicked_row + 1 or starting_row == clicked_row - 1:
                         if starting_column == clicked_column + 2 or starting_column == clicked_column - 2:
-                            board[clicked_row][clicked_column] = move_piece
-                            if clicked_square != (clicked_row, clicked_column):
-                                board[starting_row][starting_column] = "Empty"
+                            if move_piece == "White Knight":
+                                if board[clicked_row][clicked_column] not in white_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
+                            else:
+                                if board[clicked_row][clicked_column] not in black_pieces:
+                                    board[clicked_row][clicked_column] = move_piece
+                                    if clicked_square != (clicked_row, clicked_column):
+                                        board[starting_row][starting_column] = "Empty"
 
                 clicked_square = None
 
