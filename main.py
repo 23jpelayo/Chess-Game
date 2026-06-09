@@ -138,7 +138,6 @@ for piece in white_pieces:
     images[piece] = py.image.load(filename[piece]).convert_alpha()
     images[piece] = py.transform.scale(images[piece], (50, 50))
 
-
 clicked_square = None
 
 while running:
@@ -206,7 +205,56 @@ while running:
 
                 # Rook movement
                 if move_piece == "White Rook" or move_piece == "Black Rook":
-                    if starting_column == clicked_column or starting_row == clicked_row:
+                    valid_squares = []
+                    if move_piece == 'White Rook':
+                        for row in range(starting_row - 1, 0, -1):
+                            if (board[row][starting_column] == "Empty" or board[row][starting_column] not in white_pieces):
+                                valid_squares.append((row, starting_column))
+                            else:
+                                break
+                        for row in range(starting_row + 1, 7):
+                            if board[row][starting_column] == "Empty" or board[row][starting_column] not in white_pieces:
+                                valid_squares.append((row, starting_column))
+                            else:
+                                break
+
+                        for column in range(starting_column - 1, 0, -1):
+                            if board[starting_row][column] == "Empty" or board[starting_row][column] not in white_pieces:
+                                valid_squares.append((starting_row, column))
+                            else:
+                                break
+
+                        for column in range(starting_column +1, 7):
+                            if board[starting_row][column] == "Empty" or board[starting_row][column] not in white_pieces:
+                                valid_squares.append((starting_row, column))
+                            else:
+                                break
+                    else:
+                        for row in range(starting_row - 1, 0, -1):
+                            if (board[row][starting_column] == "Empty" or board[row][starting_column] not in black_pieces):
+                                valid_squares.append((row, starting_column))
+                            else:
+                                break
+                        for row in range(starting_row + 1, 7):
+                            if board[row][starting_column] == "Empty" or board[row][starting_column] not in black_pieces:
+                                valid_squares.append((row, starting_column))
+                            else:
+                                break
+
+                        for column in range(starting_column - 1, 0, -1):
+                            if board[starting_row][column] == "Empty" or board[starting_row][column] not in black_pieces:
+                                valid_squares.append((starting_row, column))
+                            else:
+                                break
+
+                        for column in range(starting_column +1, 7):
+                            if board[starting_row][column] == "Empty" or board[starting_row][column] not in black_pieces:
+                                valid_squares.append((starting_row, column))
+                            else:
+                                break
+
+
+                    if (starting_column == clicked_column or starting_row == clicked_row) and (clicked_row, clicked_column) in valid_squares:
                         if move_piece == "White Rook":
                             if board[clicked_row][clicked_column] not in white_pieces:
                                 board[clicked_row][clicked_column] = move_piece
