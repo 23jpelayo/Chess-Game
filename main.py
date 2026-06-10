@@ -176,28 +176,21 @@ while running:
                                 board[clicked_row][clicked_column] = move_piece
                                 if clicked_square != (clicked_row, clicked_column):
                                     board[starting_row][starting_column] = "Empty"
-                        else:
-                            # if there is a piece one square diagonal to the pawn, it will be able to take it
+
+                        elif move_piece == "Black Pawn":
                             if clicked_row - starting_row == 1 or starting_row == 1 and clicked_row - starting_row == 2: 
-                                if move_piece == "White Pawn":
-                                    if board[clicked_row][clicked_column] not in white_pieces:
-                                        board[clicked_row][clicked_column] = move_piece
-                                        if clicked_square != (clicked_row, clicked_column):
-                                            board[starting_row][starting_column] = "Empty"
-                                else:
-                                    if board[clicked_row][clicked_column] not in black_pieces:
-                                        board[clicked_row][clicked_column] = move_piece
-                                        if clicked_square != (clicked_row, clicked_column):
-                                            board[starting_row][starting_column] = "Empty"
+                                board[clicked_row][clicked_column] = move_piece
+                                if clicked_square != (clicked_row, clicked_column):
+                                    board[starting_row][starting_column] = "Empty"
 
                     elif (starting_column == clicked_column + 1 or starting_column == clicked_column - 1):
                         if board[clicked_row][clicked_column] != "Empty" and clicked_row < starting_row:
-                            if move_piece == "White Pawn":
+                            if move_piece == "White Pawn" and starting_row - clicked_row == 1:
                                 if board[clicked_row][clicked_column] not in white_pieces:
                                     board[clicked_row][clicked_column] = move_piece
                                     if clicked_square != (clicked_row, clicked_column):
                                         board[starting_row][starting_column] = "Empty"
-                            elif move_piece == 'Black Pawn' and clicked_row > starting_row:
+                            elif move_piece == 'Black Pawn' and clicked_row - starting_row == 1:
                                 if board[clicked_row][clicked_column] not in black_pieces:
                                     board[clicked_row][clicked_column] = move_piece
                                     if clicked_square != (clicked_row, clicked_column):
