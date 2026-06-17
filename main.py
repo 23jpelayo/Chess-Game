@@ -233,6 +233,10 @@ def get_knight_moves(start_row, start_column, board, ally_pieces):
 
     return valid_squares
 
+def move_sprite(board, click_row, click_column, start_row, start_column, move_piece):
+    board[click_row][click_column] = move_piece
+    if (click_row, click_column) != (start_row, start_column):
+        board[starting_row][starting_column] = "Empty"
 
 def find_king(board, king_color):
 
@@ -304,10 +308,10 @@ def scan_check(board, king_color, white_pieces, black_pieces):
     # directions: (1-up 2-left), (1-up 2-right), (1-down, 2-left), (1-down 2-right)
 
     for r, c in knight_directions:
-        if board[row][column] != "Empty":
-                if board[row][column] == enemy_knight:
-                    return True
-                break
+            if board[row][column] != "Empty":
+                    if board[row][column] == enemy_knight:
+                        return True
+                    break
 
     pawn_attack = [(pawn_row, -1), (pawn_row, 1)]
     for r, c in pawn_attack:
@@ -394,28 +398,20 @@ while running:
                         if move_piece == "White Pawn":
                             # pawn can only move two squares on its first move
                             if starting_row - clicked_row == 1 or starting_row == 6 and starting_row - clicked_row == 2: 
-                                board[clicked_row][clicked_column] = move_piece
-                                if clicked_square != (clicked_row, clicked_column):
-                                    board[starting_row][starting_column] = "Empty"
+                                move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
                         elif move_piece == "Black Pawn":
                             if clicked_row - starting_row == 1 or starting_row == 1 and clicked_row - starting_row == 2: 
-                                board[clicked_row][clicked_column] = move_piece
-                                if clicked_square != (clicked_row, clicked_column):
-                                    board[starting_row][starting_column] = "Empty"
+                                move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
                     elif (starting_column == clicked_column + 1 or starting_column == clicked_column - 1):
                         if board[clicked_row][clicked_column] != "Empty":
                             if move_piece == "White Pawn" and starting_row - clicked_row == 1:
                                 if board[clicked_row][clicked_column] not in white_pieces:
-                                    board[clicked_row][clicked_column] = move_piece
-                                    if clicked_square != (clicked_row, clicked_column):
-                                        board[starting_row][starting_column] = "Empty"
+                                    move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
                             elif move_piece == 'Black Pawn' and clicked_row - starting_row == 1:
                                 if board[clicked_row][clicked_column] not in black_pieces:
-                                    board[clicked_row][clicked_column] = move_piece
-                                    if clicked_square != (clicked_row, clicked_column):
-                                        board[starting_row][starting_column] = "Empty"
+                                    move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
                 # Rook movement
                 if move_piece == "White Rook" or move_piece == "Black Rook":
@@ -425,9 +421,7 @@ while running:
                         valid_squares = get_rook_moves(starting_row, starting_column, board, black_pieces)
 
                     if (clicked_row, clicked_column) in valid_squares:
-                        board[clicked_row][clicked_column] = move_piece
-                        if clicked_square != (clicked_row, clicked_column):
-                            board[starting_row][starting_column] = "Empty"
+                        move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
 
                 # Bishop movement 
@@ -437,9 +431,7 @@ while running:
                     else:
                         valid_squares = get_bishop_moves(starting_row, starting_column, board, black_pieces)
                     if (clicked_row, clicked_column) in valid_squares:
-                        board[clicked_row][clicked_column] = move_piece
-                        if clicked_square != (clicked_row, clicked_column):
-                            board[starting_row][starting_column] = "Empty"
+                        move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
                 # Queen movement
                 if move_piece == "White Queen" or move_piece == "Black Queen":
@@ -449,9 +441,7 @@ while running:
                         valid_squares = get_queen_moves(starting_row, starting_column, board, black_pieces)
 
                     if (clicked_row, clicked_column) in valid_squares:
-                        board[clicked_row][clicked_column] = move_piece
-                        if clicked_square != (clicked_row, clicked_column):
-                            board[starting_row][starting_column] = "Empty"
+                        move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
                 # King movement
                 if move_piece == "White King" or move_piece == "Black King":
@@ -460,30 +450,14 @@ while running:
                     else:
                         valid_squares = get_king_moves(starting_row, starting_column, board, black_pieces)
 
-                    if (starting_column == clicked_column or starting_row == clicked_row) and (clicked_row, clicked_column) in valid_squares:
+                    if (clicked_row, clicked_column) in valid_squares:
                         if clicked_row == starting_row + 1 or clicked_row == starting_row - 1 or clicked_column == starting_column + 1 or clicked_column == starting_column - 1:
                             if move_piece == "White King":
                                 if board[clicked_row][clicked_column] not in white_pieces:
-                                    board[clicked_row][clicked_column] = move_piece
-                                    if clicked_square != (clicked_row, clicked_column):
-                                        board[starting_row][starting_column] = "Empty"
+                                    move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
                             else:
                                 if board[clicked_row][clicked_column] not in black_pieces:
-                                    board[clicked_row][clicked_column] = move_piece
-                                    if clicked_square != (clicked_row, clicked_column):
-                                        board[starting_row][starting_column] = "Empty"
-                    elif abs(starting_row - clicked_row) == abs(starting_column - clicked_column) and (clicked_row, clicked_column) in valid_squares:
-                        if clicked_row == starting_row + 1 or clicked_row == starting_row -1:
-                            if move_piece == "White King":
-                                if board[clicked_row][clicked_column] not in white_pieces:
-                                    board[clicked_row][clicked_column] = move_piece
-                                    if clicked_square != (clicked_row, clicked_column):
-                                        board[starting_row][starting_column] = "Empty"
-                            else:
-                                if board[clicked_row][clicked_column] not in black_pieces:
-                                    board[clicked_row][clicked_column] = move_piece
-                                    if clicked_square != (clicked_row, clicked_column):
-                                        board[starting_row][starting_column] = "Empty"
+                                    move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
                 # Knight movement
                 if move_piece == "White Knight" or move_piece == "Black Knight":
@@ -493,9 +467,7 @@ while running:
                         valid_squares = get_knight_moves(starting_row, starting_column, board, black_pieces)
 
                     if (clicked_row, clicked_column) in valid_squares:
-                        board[clicked_row][clicked_column] = move_piece
-                        if clicked_square != (clicked_row, clicked_column):
-                            board[starting_row][starting_column] = "Empty"
+                        move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
                 clicked_square = None
 
