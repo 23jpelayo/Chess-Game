@@ -301,6 +301,8 @@ def scan_check(board, king_color, white_pieces, black_pieces):
                 if board[row][column] == enemy_bishop or board[row][column] == enemy_queen:
                     return True
                 break
+            row += r
+            column += c
             
 
     knight_directions = [(-2, -1), (-2, 1), (2, -1), (2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2)]
@@ -309,17 +311,20 @@ def scan_check(board, king_color, white_pieces, black_pieces):
 
     for r, c in knight_directions:
             if board[row][column] != "Empty":
-                    if board[row][column] == enemy_knight:
-                        return True
-                    break
+                if board[row][column] == enemy_knight:
+                    return True
+                break
+            row += r
+            column += c
+            
 
-    pawn_attack = [(pawn_row, -1), (pawn_row, 1)]
-    for r, c in pawn_attack:
-        row = start_row + r
-        column = start_column + c
-        if -1 < row < 8 and -1 < column < 1:
-            if board[row][column] == enemy_pawn:
-                return True
+    # pawn_attack = [(pawn_row, -1), (pawn_row, 1)]
+    # for r, c in pawn_attack:
+    #     row = start_row + r
+    #     column = start_column + c
+    #     if -1 < row < 8 and -1 < column < 1:
+    #         if board[row][column] == enemy_pawn:
+    #             return True
 
     return False
 
@@ -416,12 +421,15 @@ while running:
                 # Rook movement
                 if move_piece == "White Rook" or move_piece == "Black Rook":
                     if move_piece == "White Rook":
+                        king = "White King"
                         valid_squares = get_rook_moves(starting_row, starting_column, board, white_pieces)
                     else:
+                        king = "Black King"
                         valid_squares = get_rook_moves(starting_row, starting_column, board, black_pieces)
 
                     if (clicked_row, clicked_column) in valid_squares:
-                        move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
+                        if scan_check(board, king, white_pieces, black_pieces) == False:
+                            move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
 
                 # Bishop movement 
