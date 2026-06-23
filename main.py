@@ -280,7 +280,6 @@ def scan_check(board, king_color, white_pieces, black_pieces):
     for r, c in vertical_horizontal_direction: 
         row = start_row + r
         column = start_column + c
-
         while -1 < row < 8 and -1 < column < 8:
             if board[row][column] != "Empty":
                 if board[row][column] == enemy_rook or board[row][column] == enemy_queen:
@@ -295,7 +294,6 @@ def scan_check(board, king_color, white_pieces, black_pieces):
     for r, c in diagonal_direction:
         row = start_row + r
         column = start_column + c
-
         while -1 < row < 8 and -1 < column < 8:
             if board[row][column] != "Empty":
                 if board[row][column] == enemy_bishop or board[row][column] == enemy_queen:
@@ -310,21 +308,25 @@ def scan_check(board, king_color, white_pieces, black_pieces):
     # directions: (1-up 2-left), (1-up 2-right), (1-down, 2-left), (1-down 2-right)
 
     for r, c in knight_directions:
-            if board[row][column] != "Empty":
-                if board[row][column] == enemy_knight:
-                    return True
-                break
+            row = abs(start_row + r)
+            column = abs(start_column + c)
+            try:
+                if board[row][column] != "Empty":
+                    if board[row][column] == enemy_knight:
+                        return True
+            except IndexError:
+                continue
             row += r
             column += c
             
 
-    # pawn_attack = [(pawn_row, -1), (pawn_row, 1)]
-    # for r, c in pawn_attack:
-    #     row = start_row + r
-    #     column = start_column + c
-    #     if -1 < row < 8 and -1 < column < 1:
-    #         if board[row][column] == enemy_pawn:
-    #             return True
+    pawn_attack = [(pawn_row, -1), (pawn_row, 1)]
+    for r, c in pawn_attack:
+        row = start_row + r
+        column = start_column + c
+        print(row, column, board[row][column])
+        if board[row][column] == enemy_pawn:
+            return True
 
     return False
 
