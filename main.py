@@ -102,7 +102,7 @@ def display_pieces():
                 screen.blit(images[piece], ((column*50), (row*50)))
 
 
-def get_rook_moves(start_row, start_column, board, ally_pieces):
+def get_rook_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the rook can move into"""
     valid_squares = []
 
@@ -116,7 +116,7 @@ def get_rook_moves(start_row, start_column, board, ally_pieces):
         while -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
                 valid_squares.append((row, column))
-            elif board[row][column] not in ally_pieces:
+            elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
                 valid_squares.append((row, column))
                 break
             else:
@@ -128,7 +128,7 @@ def get_rook_moves(start_row, start_column, board, ally_pieces):
     return valid_squares
 
 
-def get_bishop_moves(start_row, start_column, board, ally_pieces):
+def get_bishop_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the bishop can move into"""
     valid_squares = []
 
@@ -142,7 +142,7 @@ def get_bishop_moves(start_row, start_column, board, ally_pieces):
         while -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
                 valid_squares.append((row, column))
-            elif board[row][column] not in ally_pieces:
+            elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
                 valid_squares.append((row, column))
                 break
             else:
@@ -154,7 +154,7 @@ def get_bishop_moves(start_row, start_column, board, ally_pieces):
     return valid_squares
 
 
-def get_queen_moves(start_row, start_column, board, ally_pieces):
+def get_queen_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the queen can move into"""
     valid_squares = []
 
@@ -168,7 +168,7 @@ def get_queen_moves(start_row, start_column, board, ally_pieces):
         while -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
                 valid_squares.append((row, column))
-            elif board[row][column] not in ally_pieces:
+            elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
                 valid_squares.append((row, column))
                 break
             else:
@@ -180,7 +180,7 @@ def get_queen_moves(start_row, start_column, board, ally_pieces):
     return valid_squares
 
 
-def get_pawn_moves(start_row, start_column, board, ally_piece):
+def get_pawn_moves(start_row, start_column, board, ally_piece, enemy_king):
     """Get the valid squares the pawn can move into"""
     valid_squares = []
 
@@ -207,13 +207,13 @@ def get_pawn_moves(start_row, start_column, board, ally_piece):
         column = start_column + c
 
         if -1 < row < 8 and -1 < column < 8:
-            if board[row][column] != "Empty" and board[row][column] not in ally_piece:
+            if board[row][column] != "Empty" and board[row][column] not in ally_piece and board[row][column] != enemy_king:
                 valid_squares.append((row, column))
 
     return valid_squares
 
 
-def get_king_moves(start_row, start_column, board, ally_pieces):
+def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the king can move into"""
     valid_squares = []
 
@@ -227,13 +227,13 @@ def get_king_moves(start_row, start_column, board, ally_pieces):
         if -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
                 valid_squares.append((row, column))
-            elif board[row][column] not in ally_pieces:
+            elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
                 valid_squares.append((row, column))
 
     return valid_squares
 
 
-def get_knight_moves(start_row, start_column, board, ally_pieces):
+def get_knight_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the knight can move into"""
     valid_squares = []
 
@@ -246,17 +246,11 @@ def get_knight_moves(start_row, start_column, board, ally_pieces):
         row = start_row + r
         column = start_column + c
 
-        while -1 < row < 8 and -1 < column < 8:
+        if -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
                 valid_squares.append((row, column))
-            elif board[row][column] not in ally_pieces:
+            elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
                 valid_squares.append((row, column))
-                break
-            else:
-                break
-
-            row += r
-            column += c
 
     return valid_squares
 
@@ -264,7 +258,7 @@ def get_knight_moves(start_row, start_column, board, ally_pieces):
 def move_sprite(board, click_row, click_column, start_row, start_column, move_piece):
     board[click_row][click_column] = move_piece
     if (click_row, click_column) != (start_row, start_column):
-        board[starting_row][starting_column] = "Empty"
+        board[start_row][start_column] = "Empty"
 
 
 def find_king(board, king_color):
@@ -417,18 +411,20 @@ while running:
                 if piece != "Empty":
                     if (turn == 'White' and piece in white_pieces) or (turn == 'Black' and piece in black_pieces):
                         clicked_square = (clicked_row, clicked_column)
-                        valid_moves_list = {"White Pawn" : get_pawn_moves(clicked_row, clicked_column, board, white_pieces),
-                                            "White Rook" : get_rook_moves(clicked_row, clicked_column, board, white_pieces),
-                                            "White Bishop" : get_bishop_moves(clicked_row, clicked_column, board, white_pieces),
-                                            "White Knight" : get_knight_moves(clicked_row, clicked_column, board, white_pieces),
-                                            "White Queen" : get_queen_moves(clicked_row, clicked_column, board, white_pieces),
-                                            "White King" : get_king_moves(clicked_row, clicked_column, board, white_pieces),
-                                            "Black Pawn" : get_pawn_moves(clicked_row, clicked_column, board, black_pieces),
-                                            "Black Rook" : get_rook_moves(clicked_row, clicked_column, board, black_pieces),
-                                            "Black Bishop" : get_bishop_moves(clicked_row, clicked_column, board, black_pieces),
-                                            "Black Knight" : get_knight_moves(clicked_row, clicked_column, board, black_pieces),
-                                            "Black Queen" : get_queen_moves(clicked_row, clicked_column, board, black_pieces),
-                                            "Black King" : get_king_moves(clicked_row, clicked_column, board, black_pieces)}
+                        valid_moves_list = {
+                            "White Pawn" : get_pawn_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
+                            "White Rook" : get_rook_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
+                            "White Bishop" : get_bishop_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
+                            "White Knight" : get_knight_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
+                            "White Queen" : get_queen_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
+                            "White King" : get_king_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
+                            "Black Pawn" : get_pawn_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
+                            "Black Rook" : get_rook_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
+                            "Black Bishop" : get_bishop_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
+                            "Black Knight" : get_knight_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
+                            "Black Queen" : get_queen_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
+                            "Black King" : get_king_moves(clicked_row, clicked_column, board, black_pieces, "White King")
+                            }
 
                         valid_moves = valid_moves_list[piece]
 
@@ -446,9 +442,11 @@ while running:
                 # Pawn movement
                 if move_piece == "White Pawn" or move_piece == "Black Pawn" :
                     if move_piece == "White Pawn":
-                        valid_squares = get_pawn_moves(starting_row, starting_column, board, white_pieces)
+                        enemy_king = "Black King"
+                        valid_squares = get_pawn_moves(starting_row, starting_column, board, white_pieces, enemy_king)
                     else:
-                        valid_squares = get_pawn_moves(starting_row, starting_column, board, black_pieces)
+                        enemy_king = "White King"
+                        valid_squares = get_pawn_moves(starting_row, starting_column, board, black_pieces, enemy_king)
 
                     if (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
@@ -458,23 +456,34 @@ while running:
                 if move_piece == "White Rook" or move_piece == "Black Rook":
                     if move_piece == "White Rook":
                         king = "White King"
-                        valid_squares = get_rook_moves(starting_row, starting_column, board, white_pieces)
+                        enemy_king = "Black King"
+                        valid_squares = get_rook_moves(starting_row, starting_column, board, white_pieces, enemy_king)
                     else:
                         king = "Black King"
-                        valid_squares = get_rook_moves(starting_row, starting_column, board, black_pieces)
+                        enemy_king = 'White King'
+                        valid_squares = get_rook_moves(starting_row, starting_column, board, black_pieces, enemy_king)
 
                     if (clicked_row, clicked_column) in valid_squares:
-                        if scan_check(board, king) == False:
-                            move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
-                            move_made = True
+                        destination_square = board[clicked_row][clicked_column]
+                        move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
+                        move_made = True
+
+                        if scan_check(board, king) == True:
+                            board[clicked_row][clicked_column] = destination_square
+                            board[starting_row][starting_column] = move_piece
+                            move_made = False
 
 
                 # Bishop movement 
                 if move_piece == "White Bishop" or move_piece == "Black Bishop":
                     if move_piece == "White Bishop":
-                        valid_squares = get_bishop_moves(starting_row, starting_column, board, white_pieces)
+                        king = "White King"
+                        enemy_king = "Black King"
+                        valid_squares = get_bishop_moves(starting_row, starting_column, board, white_pieces, enemy_king)
                     else:
-                        valid_squares = get_bishop_moves(starting_row, starting_column, board, black_pieces)
+                        king = 'Black King'
+                        enemy_king = "White King"
+                        valid_squares = get_bishop_moves(starting_row, starting_column, board, black_pieces, enemy_king)
                     if (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
                         move_made = True
@@ -482,9 +491,13 @@ while running:
                 # Queen movement
                 if move_piece == "White Queen" or move_piece == "Black Queen":
                     if move_piece == "White Queen":
-                        valid_squares = get_queen_moves(starting_row, starting_column, board, white_pieces)
+                        king = 'White King'
+                        enemy_king = "Black King"
+                        valid_squares = get_queen_moves(starting_row, starting_column, board, white_pieces, enemy_king)
                     else:
-                        valid_squares = get_queen_moves(starting_row, starting_column, board, black_pieces)
+                        king = 'Black King'
+                        enemy_king = "White King"
+                        valid_squares = get_queen_moves(starting_row, starting_column, board, black_pieces, enemy_king)
 
                     if (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
@@ -493,9 +506,13 @@ while running:
                 # King movement
                 if move_piece == "White King" or move_piece == "Black King":
                     if move_piece == "White King":
-                        valid_squares = get_king_moves(starting_row, starting_column, board, white_pieces)
+                        king = 'White King'
+                        enemy_king = "Black King"
+                        valid_squares = get_king_moves(starting_row, starting_column, board, white_pieces, enemy_king)
                     else:
-                        valid_squares = get_king_moves(starting_row, starting_column, board, black_pieces)
+                        king = 'Black King'
+                        enemy_king = "White King"
+                        valid_squares = get_king_moves(starting_row, starting_column, board, black_pieces, enemy_king)
 
                     if (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
@@ -504,9 +521,13 @@ while running:
                 # Knight movement
                 if move_piece == "White Knight" or move_piece == "Black Knight":
                     if move_piece == "White Knight":
-                        valid_squares = get_knight_moves(starting_row, starting_column, board, white_pieces)
+                        king = 'White King'
+                        enemy_king = "Black King"
+                        valid_squares = get_knight_moves(starting_row, starting_column, board, white_pieces, enemy_king)
                     else:
-                        valid_squares = get_knight_moves(starting_row, starting_column, board, black_pieces)
+                        king = 'Black King'
+                        enemy_king = "White King"
+                        valid_squares = get_knight_moves(starting_row, starting_column, board, black_pieces, enemy_king)
 
                     if (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
@@ -529,7 +550,8 @@ while running:
         center_x = (c * 50) + 25
         center_y = (r * 50) + 25
 
-        py.draw.circle(screen, "black", (center_x, center_y), 8)
+        py.draw.circle(screen, "grey", (center_x, center_y), 8)
 
     py.display.flip()
     clock.tick(60)
+
