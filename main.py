@@ -196,7 +196,7 @@ def get_pawn_moves(start_row, start_column, board, ally_piece):
         if board[move_row][start_column] == "Empty":
             valid_squares.append((move_row, start_column))
 
-        move_row_twice = starting_row + (forward_direction * 2)
+        move_row_twice = start_row + (forward_direction * 2)
         if start_row == starting_rank and -1 < move_row_twice < 8:
             if board[move_row_twice][start_column] == "Empty":
                 valid_squares.append((move_row_twice, start_column))
@@ -396,7 +396,7 @@ for piece in white_pieces:
     images[piece] = py.transform.scale(images[piece], (50, 50))
 
 clicked_square = None
-
+valid_moves = []
 turn = "White"
 
 while running:
@@ -417,6 +417,22 @@ while running:
                 if piece != "Empty":
                     if (turn == 'White' and piece in white_pieces) or (turn == 'Black' and piece in black_pieces):
                         clicked_square = (clicked_row, clicked_column)
+                        valid_moves_list = {"White Pawn" : get_pawn_moves(clicked_row, clicked_column, board, white_pieces),
+                                            "White Rook" : get_rook_moves(clicked_row, clicked_column, board, white_pieces),
+                                            "White Bishop" : get_bishop_moves(clicked_row, clicked_column, board, white_pieces),
+                                            "White Knight" : get_knight_moves(clicked_row, clicked_column, board, white_pieces),
+                                            "White Queen" : get_queen_moves(clicked_row, clicked_column, board, white_pieces),
+                                            "White King" : get_king_moves(clicked_row, clicked_column, board, white_pieces),
+                                            "Black Pawn" : get_pawn_moves(clicked_row, clicked_column, board, black_pieces),
+                                            "Black Rook" : get_rook_moves(clicked_row, clicked_column, board, black_pieces),
+                                            "Black Bishop" : get_bishop_moves(clicked_row, clicked_column, board, black_pieces),
+                                            "Black Knight" : get_knight_moves(clicked_row, clicked_column, board, black_pieces),
+                                            "Black Queen" : get_queen_moves(clicked_row, clicked_column, board, black_pieces),
+                                            "Black King" : get_king_moves(clicked_row, clicked_column, board, black_pieces)}
+
+                        valid_moves = valid_moves_list[piece]
+
+
                     else:
                         print(f"{turn}'s turn")
 
@@ -503,10 +519,17 @@ while running:
                         turn = "White"
 
                 clicked_square = None
+                valid_moves.clear()
 
     draw_board()
 
     display_pieces()
+
+    for r, c in valid_moves:
+        center_x = (c * 50) + 25
+        center_y = (r * 50) + 25
+
+        py.draw.circle(screen, "black", (center_x, center_y), 8)
 
     py.display.flip()
     clock.tick(60)
