@@ -180,6 +180,38 @@ def get_queen_moves(start_row, start_column, board, ally_pieces):
     return valid_squares
 
 
+def get_pawn_moves(start_row, start_column, board, ally_piece):
+    """Get the valid squares the pawn can move into"""
+    valid_squares = []
+
+    if board[start_row][start_column] == "White Pawn":
+        forward_direction = -1
+        starting_rank = 6
+    else:
+        forward_direction = 1
+        starting_rank = 1
+
+    move_row = start_row + forward_direction
+    if -1 < move_row < 8:
+        if board[move_row][start_column] == "Empty":
+            valid_squares.append((move_row, start_column))
+
+        move_row_twice = starting_row + (forward_direction * 2)
+        if start_row == starting_rank and -1 < move_row_twice < 8:
+            if board[move_row_twice][start_column] == "Empty":
+                valid_squares.append((move_row_twice, start_column))
+
+    capture_moves = [(forward_direction, -1), (forward_direction, 1)]
+    for r, c in capture_moves:
+        row = start_row + r
+        column = start_column + c
+
+        if -1 < row < 8 and -1 < column < 8:
+            if board[row][column] != "Empty" and board[row][column] not in ally_piece:
+                valid_squares.append((row, column))
+
+    return valid_squares
+
 def get_king_moves(start_row, start_column, board, ally_pieces):
     """Get the valid squares the king can move into"""
     valid_squares = []
@@ -251,13 +283,12 @@ def find_king(board, king_color):
                 if board[row][column] == "Black King":
                     return((row, column))
                 
-def scan_check(board, king_color, white_pieces, black_pieces):
+def scan_check(board, king_color):
     king_square = find_king(board, king_color)
 
     start_row, start_column = king_square
 
     if king_color == "White King":
-        enemy_pieces = black_pieces
         enemy_rook = "Black Rook"
         enemy_knight = "Black Knight"
         enemy_bishop = "Black Bishop"
@@ -266,7 +297,6 @@ def scan_check(board, king_color, white_pieces, black_pieces):
         pawn_row = -1 
         # white king looks for pawns above its row
     else:
-        enemy_pieces = white_pieces
         enemy_rook = "White Rook"
         enemy_knight = "White Knight"
         enemy_bishop = "White Bishop"
@@ -308,25 +338,21 @@ def scan_check(board, king_color, white_pieces, black_pieces):
     # directions: (1-up 2-left), (1-up 2-right), (1-down, 2-left), (1-down 2-right)
 
     for r, c in knight_directions:
-            row = abs(start_row + r)
-            column = abs(start_column + c)
-            try:
+            row = start_row + r
+            column = start_column + c
+            if -1 < row < 8 and -1 < column < 8:
                 if board[row][column] != "Empty":
                     if board[row][column] == enemy_knight:
                         return True
-            except IndexError:
-                continue
-            row += r
-            column += c
             
 
     pawn_attack = [(pawn_row, -1), (pawn_row, 1)]
     for r, c in pawn_attack:
         row = start_row + r
         column = start_column + c
-        print(row, column, board[row][column])
-        if board[row][column] == enemy_pawn:
-            return True
+        if 0 <= row < 8 and 0 <= column < 8:
+            if board[row][column] == enemy_pawn:
+                return True
 
     return False
 
@@ -399,26 +425,13 @@ while running:
 
                 # Pawn movement
                 if move_piece == "White Pawn" or move_piece == "Black Pawn" :
-                    # prevent the pawn from taking a piece in the same column. it can only take diagonally
-                    if starting_column == clicked_column and board[clicked_row][starting_column] == "Empty":
-                        # prevent the pawn from moving backwards
-                        if move_piece == "White Pawn":
-                            # pawn can only move two squares on its first move
-                            if starting_row - clicked_row == 1 or starting_row == 6 and starting_row - clicked_row == 2: 
-                                move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
+                    if move_piece == "White Pawn":
+                        valid_squares = get_pawn_moves(starting_row, starting_column, board, white_pieces)
+                    else:
+                        valid_squares = get_pawn_moves(starting_row, starting_column, board, black_pieces)
 
-                        elif move_piece == "Black Pawn":
-                            if clicked_row - starting_row == 1 or starting_row == 1 and clicked_row - starting_row == 2: 
-                                move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
-
-                    elif (starting_column == clicked_column + 1 or starting_column == clicked_column - 1):
-                        if board[clicked_row][clicked_column] != "Empty":
-                            if move_piece == "White Pawn" and starting_row - clicked_row == 1:
-                                if board[clicked_row][clicked_column] not in white_pieces:
-                                    move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
-                            elif move_piece == 'Black Pawn' and clicked_row - starting_row == 1:
-                                if board[clicked_row][clicked_column] not in black_pieces:
-                                    move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
+                    if (clicked_row, clicked_column) in valid_squares:
+                        move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
                 # Rook movement
                 if move_piece == "White Rook" or move_piece == "Black Rook":
@@ -430,7 +443,7 @@ while running:
                         valid_squares = get_rook_moves(starting_row, starting_column, board, black_pieces)
 
                     if (clicked_row, clicked_column) in valid_squares:
-                        if scan_check(board, king, white_pieces, black_pieces) == False:
+                        if scan_check(board, king) == False:
                             move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
 
 
