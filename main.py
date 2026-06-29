@@ -105,6 +105,12 @@ def display_pieces():
 def get_rook_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the rook can move into"""
     valid_squares = []
+    if enemy_king == "Black King":
+        king = 'White King'
+        piece = "White Rook"
+    else:
+        king = "Black King"
+        piece = "Black Rook"
 
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     # directions: up, down, left, right
@@ -115,7 +121,14 @@ def get_rook_moves(start_row, start_column, board, ally_pieces, enemy_king):
 
         while -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
+
             elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
                 valid_squares.append((row, column))
                 break
@@ -411,22 +424,32 @@ while running:
                 if piece != "Empty":
                     if (turn == 'White' and piece in white_pieces) or (turn == 'Black' and piece in black_pieces):
                         clicked_square = (clicked_row, clicked_column)
-                        valid_moves_list = {
-                            "White Pawn" : get_pawn_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
-                            "White Rook" : get_rook_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
-                            "White Bishop" : get_bishop_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
-                            "White Knight" : get_knight_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
-                            "White Queen" : get_queen_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
-                            "White King" : get_king_moves(clicked_row, clicked_column, board, white_pieces, "Black King"),
-                            "Black Pawn" : get_pawn_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
-                            "Black Rook" : get_rook_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
-                            "Black Bishop" : get_bishop_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
-                            "Black Knight" : get_knight_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
-                            "Black Queen" : get_queen_moves(clicked_row, clicked_column, board, black_pieces, "White King"),
-                            "Black King" : get_king_moves(clicked_row, clicked_column, board, black_pieces, "White King")
-                            }
 
-                        valid_moves = valid_moves_list[piece]
+                        match piece:
+                            case "White Rook":
+                                valid_moves = get_rook_moves(clicked_row, clicked_column, board, white_pieces, "Black King")
+                            case "White Pawn":
+                                valid_moves = get_pawn_moves(clicked_row, clicked_column, board, white_pieces, "Black King")
+                            case "White Bishop":
+                                valid_moves = get_bishop_moves(clicked_row, clicked_column, board, white_pieces, "Black King")
+                            case "White Queen":
+                                valid_moves = get_queen_moves(clicked_row, clicked_column, board, white_pieces, "Black King")
+                            case "White Knight":
+                                valid_moves = get_knight_moves(clicked_row, clicked_column, board, white_pieces, "Black King")
+                            case "White King":
+                                valid_moves = get_king_moves(clicked_row, clicked_column, board, white_pieces, "Black King")
+                            case "Black Rook":
+                                valid_moves = get_rook_moves(clicked_row, clicked_column, board, black_pieces, "White King")
+                            case "Black Pawn":
+                                valid_moves = get_pawn_moves(clicked_row, clicked_column, board, black_pieces, "White King")
+                            case "Black Bishop":
+                                valid_moves = get_bishop_moves(clicked_row, clicked_column, board, black_pieces, "White King")
+                            case "Black Queen":
+                                valid_moves = get_queen_moves(clicked_row, clicked_column, board, black_pieces, "White King")
+                            case "Black Knight":
+                                valid_moves = get_knight_moves(clicked_row, clicked_column, board, black_pieces, "White King")
+                            case "Black King":
+                                valid_moves = get_king_moves(clicked_row, clicked_column, board, black_pieces, "White King")
 
 
                     else:
@@ -467,11 +490,6 @@ while running:
                         destination_square = board[clicked_row][clicked_column]
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
                         move_made = True
-
-                        if scan_check(board, king) == True:
-                            board[clicked_row][clicked_column] = destination_square
-                            board[starting_row][starting_column] = move_piece
-                            move_made = False
 
 
                 # Bishop movement 
