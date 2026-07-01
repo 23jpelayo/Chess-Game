@@ -130,7 +130,13 @@ def get_rook_moves(start_row, start_column, board, ally_pieces, enemy_king):
                 board[start_row][start_column] = piece
 
             elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
                 break
             else:
                 break
@@ -144,6 +150,12 @@ def get_rook_moves(start_row, start_column, board, ally_pieces, enemy_king):
 def get_bishop_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the bishop can move into"""
     valid_squares = []
+    if enemy_king == "Black King":
+        king = 'White King'
+        piece = "White Bishop"
+    else:
+        king = "Black King"
+        piece = "Black Bishop"
 
     directions = [(-1, 1), (-1, -1), (1, 1), (1, -1)]
     # directions: up-right, up-left, down-right, down-left
@@ -154,9 +166,21 @@ def get_bishop_moves(start_row, start_column, board, ally_pieces, enemy_king):
 
         while -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
             elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
                 break
             else:
                 break
@@ -170,6 +194,12 @@ def get_bishop_moves(start_row, start_column, board, ally_pieces, enemy_king):
 def get_queen_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the queen can move into"""
     valid_squares = []
+    if enemy_king == "Black King":
+        king = 'White King'
+        piece = "White Queen"
+    else:
+        king = "Black King"
+        piece = "Black Queen"
 
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, 1), (-1, -1), (1, 1), (1, -1)]
     # directions: up, down, left, right, up-right, up-left, down-right, down-left
@@ -180,9 +210,21 @@ def get_queen_moves(start_row, start_column, board, ally_pieces, enemy_king):
 
         while -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
             elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
                 break
             else:
                 break
@@ -196,6 +238,12 @@ def get_queen_moves(start_row, start_column, board, ally_pieces, enemy_king):
 def get_pawn_moves(start_row, start_column, board, ally_piece, enemy_king):
     """Get the valid squares the pawn can move into"""
     valid_squares = []
+    if enemy_king == "Black King":
+        king = 'White King'
+        piece = "White Pawn"
+    else:
+        king = "Black King"
+        piece = "Black Pawn"
 
     if board[start_row][start_column] == "White Pawn":
         forward_direction = -1
@@ -207,12 +255,24 @@ def get_pawn_moves(start_row, start_column, board, ally_piece, enemy_king):
     move_row = start_row + forward_direction
     if -1 < move_row < 8:
         if board[move_row][start_column] == "Empty":
-            valid_squares.append((move_row, start_column))
+            destination_square = board[move_row][start_column]
+            move_sprite(board, move_row, start_column, start_row, start_column, piece)
+            if scan_check(board, king) == False:
+                valid_squares.append((move_row, start_column))
+
+            board[move_row][start_column] = destination_square
+            board[start_row][start_column] = piece
 
         move_row_twice = start_row + (forward_direction * 2)
         if start_row == starting_rank and -1 < move_row_twice < 8:
-            if board[move_row_twice][start_column] == "Empty":
-                valid_squares.append((move_row_twice, start_column))
+            if board[move_row_twice][start_column] == "Empty" and board[move_row][start_column] == "Empty":
+                destination_square = board[move_row_twice][start_column]
+                move_sprite(board, move_row_twice, start_column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((move_row_twice, start_column))
+
+                board[move_row_twice][start_column] = destination_square
+                board[start_row][start_column] = piece
 
     capture_moves = [(forward_direction, -1), (forward_direction, 1)]
     for r, c in capture_moves:
@@ -221,7 +281,13 @@ def get_pawn_moves(start_row, start_column, board, ally_piece, enemy_king):
 
         if -1 < row < 8 and -1 < column < 8:
             if board[row][column] != "Empty" and board[row][column] not in ally_piece and board[row][column] != enemy_king:
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
 
     return valid_squares
 
@@ -229,6 +295,12 @@ def get_pawn_moves(start_row, start_column, board, ally_piece, enemy_king):
 def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the king can move into"""
     valid_squares = []
+    if enemy_king == "Black King":
+        king = 'White King'
+        piece = "White King"
+    else:
+        king = "Black King"
+        piece = "Black King"
 
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, 1), (-1, -1), (1, 1), (1, -1)]
     # directions: up, down, left, right, up-right, up-left, down-right, down-left
@@ -239,9 +311,21 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
 
         if -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
             elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
 
     return valid_squares
 
@@ -249,6 +333,12 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
 def get_knight_moves(start_row, start_column, board, ally_pieces, enemy_king):
     """Get the valid squares the knight can move into"""
     valid_squares = []
+    if enemy_king == "Black King":
+        king = 'White King'
+        piece = "White Knight"
+    else:
+        king = "Black King"
+        piece = "Black Knight"
 
     directions = [(-2, -1), (-2, 1), (2, -1), (2, 1), 
                   (-1, -2), (-1, 2), (1, -2), (1, 2)]
@@ -261,9 +351,21 @@ def get_knight_moves(start_row, start_column, board, ally_pieces, enemy_king):
 
         if -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
             elif board[row][column] not in ally_pieces and board[row][column] != enemy_king:
-                valid_squares.append((row, column))
+                destination_square = board[row][column]
+                move_sprite(board, row, column, start_row, start_column, piece)
+                if scan_check(board, king) == False:
+                    valid_squares.append((row, column))
+
+                board[row][column] = destination_square
+                board[start_row][start_column] = piece
 
     return valid_squares
 
