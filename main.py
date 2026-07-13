@@ -20,78 +20,18 @@ clock.tick(60)
 
 def draw_board():
     """Draw the board"""
-# A
-    A8 = py.draw.rect(screen, WHITE, (0, 0, 50, 50))
-    A7 = py.draw.rect(screen, GREEN, (0, 50, 50, 50))
-    A6 = py.draw.rect(screen, WHITE, (0, 100, 50, 50))
-    A5 = py.draw.rect(screen, GREEN, (0, 150, 50, 50))
-    A4 = py.draw.rect(screen, WHITE, (0, 200, 50, 50))
-    A3 = py.draw.rect(screen, GREEN, (0, 250, 50, 50))
-    A2 = py.draw.rect(screen, WHITE, (0, 300, 50, 50))
-    A1 = py.draw.rect(screen, GREEN, (0, 350, 50, 50))
-# B
-    B8 = py.draw.rect(screen, GREEN, (50, 0, 50, 50))
-    B7 = py.draw.rect(screen, WHITE, (50, 50, 50, 50))
-    B6 = py.draw.rect(screen, GREEN, (50, 100, 50, 50))
-    B5 = py.draw.rect(screen, WHITE, (50, 150, 50, 50))
-    B4 = py.draw.rect(screen, GREEN, (50, 200, 50, 50))
-    B3 = py.draw.rect(screen, WHITE, (50, 250, 50, 50))
-    B2 = py.draw.rect(screen, GREEN, (50, 300, 50, 50))
-    B1 = py.draw.rect(screen, WHITE, (50, 350, 50, 50))
-# C
-    C8 = py.draw.rect(screen, WHITE, (100, 0, 50, 50))
-    C7 = py.draw.rect(screen, GREEN, (100, 50, 50, 50))
-    C6 = py.draw.rect(screen, WHITE, (100, 100, 50, 50))
-    C5 = py.draw.rect(screen, GREEN, (100, 150, 50, 50))
-    C4 = py.draw.rect(screen, WHITE, (100, 200, 50, 50))
-    C3 = py.draw.rect(screen, GREEN, (100, 250, 50, 50))
-    C2 = py.draw.rect(screen, WHITE, (100, 300, 50, 50))
-    C1 = py.draw.rect(screen, GREEN, (100, 350, 50, 50))
-# D
-    D8 = py.draw.rect(screen, GREEN, (150, 0, 50, 50))
-    D7 = py.draw.rect(screen, WHITE, (150, 50, 50, 50))
-    D6 = py.draw.rect(screen, GREEN, (150, 100, 50, 50))
-    D5 = py.draw.rect(screen, WHITE, (150, 150, 50, 50))
-    D4 = py.draw.rect(screen, GREEN, (150, 200, 50, 50))
-    D3 = py.draw.rect(screen, WHITE, (150, 250, 50, 50))
-    D2 = py.draw.rect(screen, GREEN, (150, 300, 50, 50))
-    D1 = py.draw.rect(screen, WHITE, (150, 350, 50, 50))
-# E
-    E8 = py.draw.rect(screen, WHITE, (200, 0, 50, 50))
-    E7 = py.draw.rect(screen, GREEN, (200, 50, 50, 50))
-    E6 = py.draw.rect(screen, WHITE, (200, 100, 50, 50))
-    E5 = py.draw.rect(screen, GREEN, (200, 150, 50, 50))
-    E4 = py.draw.rect(screen, WHITE, (200, 200, 50, 50))
-    E3 = py.draw.rect(screen, GREEN, (200, 250, 50, 50))
-    E2 = py.draw.rect(screen, WHITE, (200, 300, 50, 50))
-    E1 = py.draw.rect(screen, GREEN, (200, 350, 50, 50))
-# F
-    F8 = py.draw.rect(screen, GREEN, (250, 0, 50, 50))
-    F7 = py.draw.rect(screen, WHITE, (250, 50, 50, 50))
-    F6 = py.draw.rect(screen, GREEN, (250, 100, 50, 50))
-    F5 = py.draw.rect(screen, WHITE, (250, 150, 50, 50))
-    F4 = py.draw.rect(screen, GREEN, (250, 200, 50, 50))
-    F3 = py.draw.rect(screen, WHITE, (250, 250, 50, 50))
-    F2 = py.draw.rect(screen, GREEN, (250, 300, 50, 50))
-    F1 = py.draw.rect(screen, WHITE, (250, 350, 50, 50))
-# G
-    G8 = py.draw.rect(screen, WHITE, (300, 0, 50, 50))
-    G7 = py.draw.rect(screen, GREEN, (300, 50, 50, 50))
-    G6 = py.draw.rect(screen, WHITE, (300, 100, 50, 50))
-    G5 = py.draw.rect(screen, GREEN, (300, 150, 50, 50))
-    G4 = py.draw.rect(screen, WHITE, (300, 200, 50, 50))
-    G3 = py.draw.rect(screen, GREEN, (300, 250, 50, 50))
-    G2 = py.draw.rect(screen, WHITE, (300, 300, 50, 50))
-    G1 = py.draw.rect(screen, GREEN, (300, 350, 50, 50))
-# H
-    H8 = py.draw.rect(screen, GREEN, (350, 0, 50, 50))
-    H7 = py.draw.rect(screen, WHITE, (350, 50, 50, 50))
-    H6 = py.draw.rect(screen, GREEN, (350, 100, 50, 50))
-    H5 = py.draw.rect(screen, WHITE, (350, 150, 50, 50))
-    H4 = py.draw.rect(screen, GREEN, (350, 200, 50, 50))
-    H3 = py.draw.rect(screen, WHITE, (350, 250, 50, 50))
-    H2 = py.draw.rect(screen, GREEN, (350, 300, 50, 50))
-    H1 = py.draw.rect(screen, WHITE, (350, 350, 50, 50))
+
+    for row in range (8):
+        for column in range (8):
+            x = row * 50
+            y = column * 50
+
+            if (row + column) % 2 == 0:
+                color = WHITE
+            else:
+                color = GREEN
+
+            py.draw.rect(screen, color, (x, y, 50, 50))
 
 
 def display_pieces():
@@ -415,6 +355,7 @@ def scan_check(board, king_color):
     start_row, start_column = king_square
 
     if king_color == "White King":
+        enemy_king = "Black King"
         enemy_rook = "Black Rook"
         enemy_knight = "Black Knight"
         enemy_bishop = "Black Bishop"
@@ -423,6 +364,7 @@ def scan_check(board, king_color):
         pawn_row = -1 
         # white king looks for pawns above its row
     else:
+        enemy_king = "White King"
         enemy_rook = "White Rook"
         enemy_knight = "White Knight"
         enemy_bishop = "White Bishop"
@@ -437,6 +379,9 @@ def scan_check(board, king_color):
         row = start_row + r
         column = start_column + c
         while -1 < row < 8 and -1 < column < 8:
+            if (start_row - 2) < row < (start_row + 2) and (start_column - 2) < column < (start_column + 2):
+                if board[row][column] == enemy_king:
+                    return True
             if board[row][column] != "Empty":
                 if board[row][column] == enemy_rook or board[row][column] == enemy_queen:
                     return True
@@ -451,6 +396,9 @@ def scan_check(board, king_color):
         row = start_row + r
         column = start_column + c
         while -1 < row < 8 and -1 < column < 8:
+            if (start_row - 2) < row < (start_row + 2) and (start_column - 2) < column < (start_column + 2):
+                if board[row][column] == enemy_king:
+                    return True
             if board[row][column] != "Empty":
                 if board[row][column] == enemy_bishop or board[row][column] == enemy_queen:
                     return True
@@ -501,27 +449,67 @@ def scan_checkmate(board, black_pieces, white_pieces, turn):
                     if board[row][column] == piece:
                         if piece == ally_piece[0]:
                             if get_king_moves(row, column, board, ally_piece, enemy_king) is not None:
-                                valid_moves.append(get_king_moves(row, column, board, ally_piece, enemy_king))
+                                valid_moves.extend(get_king_moves(row, column, board, ally_piece, enemy_king))
                         elif piece == ally_piece[1]:
                             if get_queen_moves(row, column, board, ally_piece, enemy_king) is not None:
-                                valid_moves.append(get_queen_moves(row, column, board, ally_piece, enemy_king))
+                                valid_moves.extend(get_queen_moves(row, column, board, ally_piece, enemy_king))
                         elif piece == ally_piece[2]:
                             if get_bishop_moves(row, column, board, ally_piece, enemy_king) is not None:
-                                valid_moves.append(get_bishop_moves(row, column, board, ally_piece, enemy_king))
+                                valid_moves.extend(get_bishop_moves(row, column, board, ally_piece, enemy_king))
                         elif piece == ally_piece[3]:
                             if get_knight_moves(row, column, board, ally_piece, enemy_king) is not None:
-                                valid_moves.append(get_knight_moves(row, column, board, ally_piece, enemy_king))
+                                valid_moves.extend(get_knight_moves(row, column, board, ally_piece, enemy_king))
                         elif piece == ally_piece[4]:
                             if get_rook_moves(row, column, board, ally_piece, enemy_king) is not None:
-                                valid_moves.append(get_rook_moves(row, column, board, ally_piece, enemy_king))
+                                valid_moves.extend(get_rook_moves(row, column, board, ally_piece, enemy_king))
                         else:
                             if get_pawn_moves(row, column, board, ally_piece, enemy_king) is not None:
-                                valid_moves.append(get_pawn_moves(row, column, board, ally_piece, enemy_king))
+                                valid_moves.extend(get_pawn_moves(row, column, board, ally_piece, enemy_king))
 
-                        if valid_moves == []:
-                            return True
+        if valid_moves == []:
+            return True
+        else:
+            return False
+                    
+def scan_stalemate(board, black_pieces, white_pieces, turn):
+    valid_moves = []
+    if turn == "White":
+        king = "White King"
+        enemy_king = "Black King"
+        ally_piece = white_pieces
+    else:
+        king = "Black King"
+        enemy_king = "White King"
+        ally_piece = black_pieces
+
+    if scan_check(board, king) is False:
+        for piece in ally_piece:
+            for row in range(8):
+                for column in range(8):
+                    if board[row][column] == piece:
+                        if piece == ally_piece[0]:
+                            if get_king_moves(row, column, board, ally_piece, enemy_king) is not None:
+                                valid_moves.extend(get_king_moves(row, column, board, ally_piece, enemy_king))
+                        elif piece == ally_piece[1]:
+                            if get_queen_moves(row, column, board, ally_piece, enemy_king) is not None:
+                                valid_moves.extend(get_queen_moves(row, column, board, ally_piece, enemy_king))
+                        elif piece == ally_piece[2]:
+                            if get_bishop_moves(row, column, board, ally_piece, enemy_king) is not None:
+                                valid_moves.extend(get_bishop_moves(row, column, board, ally_piece, enemy_king))
+                        elif piece == ally_piece[3]:
+                            if get_knight_moves(row, column, board, ally_piece, enemy_king) is not None:
+                                valid_moves.extend(get_knight_moves(row, column, board, ally_piece, enemy_king))
+                        elif piece == ally_piece[4]:
+                            if get_rook_moves(row, column, board, ally_piece, enemy_king) is not None:
+                                valid_moves.extend(get_rook_moves(row, column, board, ally_piece, enemy_king))
                         else:
-                            return False
+                            if get_pawn_moves(row, column, board, ally_piece, enemy_king) is not None:
+                                valid_moves.extend(get_pawn_moves(row, column, board, ally_piece, enemy_king))
+
+        if valid_moves == []:
+            return True
+        else:
+            return False
 
 
 def draw_text(text, font, text_color, x, y):
@@ -652,7 +640,6 @@ while running:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
                         move_made = True
 
-
                 # Bishop movement 
                 if move_piece == "White Bishop" or move_piece == "Black Bishop":
                     if move_piece == "White Bishop":
@@ -732,11 +719,14 @@ while running:
 
             py.draw.circle(screen, "grey", (center_x, center_y), 8)
 
-    if scan_checkmate(board, black_pieces, white_pieces, turn) is True:
+    if scan_checkmate(board, black_pieces, white_pieces, turn) == True:
         if turn == "White":
             draw_text("Black Wins", text_font, "black", 150, 150)
         else:
             draw_text("White Wins", text_font, "black", 150, 150)
+
+    elif scan_stalemate(board, black_pieces, white_pieces, turn) == True:
+        draw_text("Draw", text_font, "black", 150, 150)
 
 
     py.display.flip()
