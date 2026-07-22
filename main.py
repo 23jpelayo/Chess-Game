@@ -502,7 +502,7 @@ def scan_stalemate(board, black_pieces, white_pieces, turn):
                         elif piece == ally_piece[4]:
                             if get_rook_moves(row, column, board, ally_piece, enemy_king) is not None:
                                 valid_moves.extend(get_rook_moves(row, column, board, ally_piece, enemy_king))
-                        else:
+                        elif piece == ally_piece[5]:
                             if get_pawn_moves(row, column, board, ally_piece, enemy_king) is not None:
                                 valid_moves.extend(get_pawn_moves(row, column, board, ally_piece, enemy_king))
 
@@ -511,6 +511,16 @@ def scan_stalemate(board, black_pieces, white_pieces, turn):
         else:
             return False
 
+
+def promote_pawn(piece, click_row):
+    if piece == "White Pawn":
+        if click_row == 0:
+            return True
+    else:
+        if click_row == 7:
+            return True
+        
+    return False
 
 def draw_text(text, font, text_color, x, y):
     image = font.render(text, True, text_color, "white")
@@ -622,6 +632,11 @@ while running:
 
                     if valid_squares is not None and (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
+                        if promote_pawn(piece, clicked_row):
+                            if move_piece in white_pieces:
+                                board[clicked_row][clicked_column] = "White Queen"
+                            else:
+                                board[clicked_row][clicked_column] = "Black Queen"
                         move_made = True
 
                 # Rook movement
