@@ -634,7 +634,45 @@ while running:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
                         if promote_pawn(piece, clicked_row):
                             if move_piece in white_pieces:
-                                board[clicked_row][clicked_column] = "White Queen"
+                                if move_piece in white_pieces:
+                                    piece1 = board[clicked_row+1][clicked_column]
+                                    piece2 = board[clicked_row+2][clicked_column]
+                                    piece3 = board[clicked_row+3][clicked_column]
+                                    piece4 = board[clicked_row+4][clicked_column]
+
+                                    board[clicked_row+1][clicked_column] = "White Queen"
+                                    board[clicked_row+2][clicked_column] = "White Rook"
+                                    board[clicked_row+3][clicked_column] = "White Bishop"
+                                    board[clicked_row+4][clicked_column] = "White Knight"
+
+                                    clicked_square = None
+                                    while clicked_square:
+
+                                        if event.type == py.MOUSEBUTTONDOWN:
+                                            x_pos, y_pos = py.mouse.get_pos()
+
+                                            clicked_column = x_pos // 50
+                                            clicked_row = y_pos // 50
+
+                                            if board[clicked_row][clicked_column] == "White Queen":
+                                                board[clicked_row][clicked_column] = "White QUeen"
+                                                clicked_square = (clicked_row, clicked_column)
+                                            elif board[clicked_row][clicked_column] == "White Rook":
+                                                board[clicked_row][clicked_column] = "White Rook"
+                                                clicked_square = (clicked_row, clicked_column)
+                                            elif board[clicked_row][clicked_column] == "White Bishop":
+                                                board[clicked_row][clicked_column] = "White Bishop"
+                                                clicked_square = (clicked_row, clicked_column)
+                                            elif board[clicked_row][clicked_column] == "White Knight":
+                                                board[clicked_row][clicked_column] = "White Knight"
+                                                clicked_square = (clicked_row, clicked_column)
+                                            else:
+                                                continue
+
+                                board[clicked_row+1][clicked_column] = piece1
+                                board[clicked_row+2][clicked_column] = piece2
+                                board[clicked_row+3][clicked_column] = piece3
+                                board[clicked_row+4][clicked_column] = piece4
                             else:
                                 board[clicked_row][clicked_column] = "Black Queen"
                         move_made = True
