@@ -566,6 +566,8 @@ for piece in white_pieces:
     images[piece] = py.transform.scale(images[piece], (50, 50))
 
 clicked_square = None
+promoting_pawn = None
+pawn_color = None
 valid_moves = []
 turn = "White"
 
@@ -580,6 +582,29 @@ while running:
 
             clicked_column = x_pos // 50
             clicked_row = y_pos // 50
+
+            if promoting_pawn is not None:
+                pawn_row, pawn_column = promoting_pawn
+
+                if board[pawn_row][pawn_column] in white_pieces:
+                    menu_row = [0, 1, 2, 3]
+                    piece_choice = ["White Queen", "White Bishop", "White Knight", "White Rook"]
+                else:
+                    menu_row = [7, 6, 5, 4]
+                    piece_choice = ["Black Queen", "Black Bishop", "Black Knight", "Black Rook"]
+
+                if clicked_column == pawn_column and clicked_row in menu_row:
+                    choice = piece_choice[menu_row.index(clicked_row)]
+
+                    board[clicked_row][clicked_column] = choice
+
+                    promoting_pawn = None
+                    if turn == "White":
+                        turn = "Black"
+                    else:
+                        turn = 'White'
+                    clicked_square = None
+                continue
 
             if clicked_square is None:
                 piece = board[clicked_row][clicked_column]
@@ -632,50 +657,20 @@ while running:
 
                     if valid_squares is not None and (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
-                        if promote_pawn(piece, clicked_row):
+                        if promote_pawn(move_piece, clicked_row):
+                            promoting_pawn = (clicked_row, clicked_column)
                             if move_piece in white_pieces:
-                                if move_piece in white_pieces:
-                                    piece1 = board[clicked_row+1][clicked_column]
-                                    piece2 = board[clicked_row+2][clicked_column]
-                                    piece3 = board[clicked_row+3][clicked_column]
-                                    piece4 = board[clicked_row+4][clicked_column]
-
-                                    board[clicked_row+1][clicked_column] = "White Queen"
-                                    board[clicked_row+2][clicked_column] = "White Rook"
-                                    board[clicked_row+3][clicked_column] = "White Bishop"
-                                    board[clicked_row+4][clicked_column] = "White Knight"
-
-                                    clicked_square = None
-                                    while clicked_square:
-
-                                        if event.type == py.MOUSEBUTTONDOWN:
-                                            x_pos, y_pos = py.mouse.get_pos()
-
-                                            clicked_column = x_pos // 50
-                                            clicked_row = y_pos // 50
-
-                                            if board[clicked_row][clicked_column] == "White Queen":
-                                                board[clicked_row][clicked_column] = "White QUeen"
-                                                clicked_square = (clicked_row, clicked_column)
-                                            elif board[clicked_row][clicked_column] == "White Rook":
-                                                board[clicked_row][clicked_column] = "White Rook"
-                                                clicked_square = (clicked_row, clicked_column)
-                                            elif board[clicked_row][clicked_column] == "White Bishop":
-                                                board[clicked_row][clicked_column] = "White Bishop"
-                                                clicked_square = (clicked_row, clicked_column)
-                                            elif board[clicked_row][clicked_column] == "White Knight":
-                                                board[clicked_row][clicked_column] = "White Knight"
-                                                clicked_square = (clicked_row, clicked_column)
-                                            else:
-                                                continue
-
-                                board[clicked_row+1][clicked_column] = piece1
-                                board[clicked_row+2][clicked_column] = piece2
-                                board[clicked_row+3][clicked_column] = piece3
-                                board[clicked_row+4][clicked_column] = piece4
+                                pawn_color = "White"
                             else:
-                                board[clicked_row][clicked_column] = "Black Queen"
-                        move_made = True
+                                pawn_color = "Black"
+
+                            move_made = False 
+                            # when pawn is promoted, the move_made if flipped twice, 
+                            # so if white promote a pawn it would have an extra turn
+                            # This makes it so that does not happen
+                        else:
+                            move_made = True
+                            
 
                 # Rook movement
                 if move_piece == "White Rook" or move_piece == "Black Rook":
@@ -765,6 +760,26 @@ while running:
     draw_board()
 
     display_pieces()
+
+    if promoting_pawn is not None:
+        pawn_row, pawn_column = promoting_pawn
+        if pawn_color == "White":
+            menu_row = [0, 1, 2, 3]
+            piece_choice = ["White Queen", "White Bishop", "White Knight", "White Rook"]
+        else:
+            menu_row = [7, 6, 5, 4]
+            piece_choice = ["Black Queen", "Black Bishop", "Black Knight", "Black Rook"]
+
+        for index, row in enumerate(menu_row):
+            piece = piece_choice[index]
+            x = pawn_column * 50
+            y = row * 50
+
+            py.draw.rect(screen, (220, 220, 220), (x, y, 50, 50))
+            screen.blit(images[piece], (x, y))
+
+        
+
     if valid_moves is not None:
         for r, c in valid_moves:
             center_x = (c * 50) + 25
