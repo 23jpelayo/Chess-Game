@@ -258,10 +258,13 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, 1), (-1, -1), (1, 1), (1, -1)]
     # directions: up, down, left, right, up-right, up-left, down-right, down-left
 
+    castle_left = False
+    castle_right = False
+
     for r, c, in directions:
         row = start_row + r
         column = start_column + c
-
+       
         if -1 < row < 8 and -1 < column < 8:
             if board[row][column] == "Empty":
                 destination_square = board[row][column]
@@ -279,6 +282,45 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
 
                 board[row][column] = destination_square
                 board[start_row][start_column] = piece
+        piece_between_left = []
+        piece_between_right = []
+        castle_column = start_column
+        if piece in white_pieces:
+            while board[7][castle_column] != 'White Rook':
+                piece_between_left.append(board[7][castle_column])
+                castle_column -= 1
+            while board[7][castle_column] != 'White Rook':
+                piece_between_right.append(board[7][castle_column])
+                castle_column += 1
+        else:
+            while board[0][castle_column] != 'Black Rook':
+                piece_between_left.append(board[7][castle_column])
+                castle_column -= 1
+            while board[0][castle_column] != 'Black Rook':
+                piece_between_right.append(board[7][castle_column])
+                castle_column += 1
+
+        if all(items == "Empty" for items in piece_between_left):
+            castle_left = True
+            print(castle_left)
+        elif all(items == "Empty" for items in piece_between_right):
+            castle_right = True
+            print(castle_right)
+
+        print(piece_between_left, piece_between_right)
+
+        if king in white_pieces:
+            if not white_king_moved:
+                if not white_a_rook_moved and castle_left:
+                    valid_squares.append((7, 2))
+                elif not white_h_rook_moved and castle_right:
+                    valid_squares.append((7, 5))
+        else:
+            if not black_king_moved:
+                if not white_a_rook_moved and castle_left:
+                    valid_squares.append((0, 2))
+                elif not white_h_rook_moved and castle_right:
+                    valid_squares.append((0, 5))
 
     if len(valid_squares) > 0:
         return valid_squares
@@ -568,6 +610,12 @@ for piece in white_pieces:
 clicked_square = None
 promoting_pawn = None
 pawn_color = None
+white_king_moved = False
+black_king_moved = False
+white_a_rook_moved = False
+white_h_rook_moved = False
+black_a_rook_moved = False
+black_h_rook_moved = False
 valid_moves = []
 turn = "White"
 
@@ -596,7 +644,7 @@ while running:
                 if clicked_column == pawn_column and clicked_row in menu_row:
                     choice = piece_choice[menu_row.index(clicked_row)]
 
-                    board[clicked_row][clicked_column] = choice
+                    board[pawn_row][pawn_column] = choice
 
                     promoting_pawn = None
                     if turn == "White":
@@ -686,6 +734,16 @@ while running:
                     if valid_squares is not None and (clicked_row, clicked_column) in valid_squares:
                         destination_square = board[clicked_row][clicked_column]
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
+                        if move_piece == "White Rook":
+                            if starting_column == 0:
+                                white_a_rook_moved = True
+                            else:
+                                white_h_rook_moved = True
+                        else:
+                            if starting_column == 0:
+                                black_a_rook_moved = True
+                            else:
+                                black_h_rook_moved = True
                         move_made = True
 
                 # Bishop movement 
@@ -730,6 +788,10 @@ while running:
 
                     if valid_squares is not None and (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
+                        if move_piece == "White King":
+                            white_king_moved = True
+                        else:
+                            black_king_moved = True
                         move_made = True
 
                 # Knight movement
