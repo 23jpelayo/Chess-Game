@@ -284,43 +284,44 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
                 board[start_row][start_column] = piece
         piece_between_left = []
         piece_between_right = []
-        castle_column = start_column
+        castle_column1 = start_column - 1
+        castle_column2 = start_column + 1
         if piece in white_pieces:
-            while board[7][castle_column] != 'White Rook':
-                piece_between_left.append(board[7][castle_column])
-                castle_column -= 1
-            while board[7][castle_column] != 'White Rook':
-                piece_between_right.append(board[7][castle_column])
-                castle_column += 1
+            while board[7][castle_column1] != 'White Rook':
+                piece_between_left.append(board[7][castle_column1])
+                castle_column1 -= 1
+            while board[7][castle_column2] != 'White Rook':
+                piece_between_right.append(board[7][castle_column2])
+                castle_column2 += 1
         else:
-            while board[0][castle_column] != 'Black Rook':
-                piece_between_left.append(board[7][castle_column])
-                castle_column -= 1
-            while board[0][castle_column] != 'Black Rook':
-                piece_between_right.append(board[7][castle_column])
-                castle_column += 1
+            while board[0][castle_column1] != 'Black Rook':
+                piece_between_left.append(board[7][castle_column1])
+                castle_column1 -= 1
+            while board[0][castle_column2] != 'Black Rook':
+                piece_between_right.append(board[7][castle_column2])
+                castle_column2 += 1
 
         if all(items == "Empty" for items in piece_between_left):
             castle_left = True
-            print(castle_left)
         elif all(items == "Empty" for items in piece_between_right):
             castle_right = True
-            print(castle_right)
-
-        print(piece_between_left, piece_between_right)
 
         if king in white_pieces:
             if not white_king_moved:
                 if not white_a_rook_moved and castle_left:
-                    valid_squares.append((7, 2))
+                    if scan_check(board, king) == False:
+                        valid_squares.append((7, 2))
                 elif not white_h_rook_moved and castle_right:
-                    valid_squares.append((7, 5))
-        else:
+                    if scan_check(board, king) == False:
+                        valid_squares.append((7, 6))
+        elif king in black_pieces:
             if not black_king_moved:
                 if not white_a_rook_moved and castle_left:
-                    valid_squares.append((0, 2))
+                    if scan_check(board, king) == False:
+                        valid_squares.append((0, 2))
                 elif not white_h_rook_moved and castle_right:
-                    valid_squares.append((0, 5))
+                    if scan_check(board, king) == False:
+                        valid_squares.append((0, 6))
 
     if len(valid_squares) > 0:
         return valid_squares
@@ -789,6 +790,12 @@ while running:
                     if valid_squares is not None and (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
                         if move_piece == "White King":
+                            if clicked_column == starting_column + 2:
+                                board[7][5] = "White Rook"
+                                board[7][7] = "Empty"
+                            elif clicked_column == starting_column - 2:
+                                board[7][3] = "White Rook"
+                                board[7][0] = "Empty"
                             white_king_moved = True
                         else:
                             black_king_moved = True
