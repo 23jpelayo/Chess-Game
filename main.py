@@ -286,19 +286,19 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
         piece_between_right = []
         castle_column1 = start_column - 1
         castle_column2 = start_column + 1
-        if piece in white_pieces:
+        if piece in white_pieces and start_column == 4:
             while board[7][castle_column1] != 'White Rook':
                 piece_between_left.append(board[7][castle_column1])
                 castle_column1 -= 1
             while board[7][castle_column2] != 'White Rook':
                 piece_between_right.append(board[7][castle_column2])
                 castle_column2 += 1
-        else:
+        elif piece in black_pieces and start_column == 4:
             while board[0][castle_column1] != 'Black Rook':
-                piece_between_left.append(board[7][castle_column1])
+                piece_between_left.append(board[0][castle_column1])
                 castle_column1 -= 1
             while board[0][castle_column2] != 'Black Rook':
-                piece_between_right.append(board[7][castle_column2])
+                piece_between_right.append(board[0][castle_column2])
                 castle_column2 += 1
 
         if all(items == "Empty" for items in piece_between_left):
@@ -309,19 +309,59 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
         if king in white_pieces:
             if not white_king_moved:
                 if not white_a_rook_moved and castle_left:
+                    destination_square = board[7][3]
+                    move_sprite(board, 7, 3, start_row, start_column, piece)
                     if scan_check(board, king) == False:
-                        valid_squares.append((7, 2))
+                        destination_square = board[7][2]
+                        move_sprite(board, 7, 2, start_row, start_column, piece)
+                        if scan_check(board, king) == False:
+                            valid_squares.append((7, 2))
+                        board[7][2] = destination_square
+                        board[start_row][start_column] = piece
+
+                    board[7][3] = destination_square
+                    board[start_row][start_column] = piece
                 elif not white_h_rook_moved and castle_right:
+                    destination_square = board[7][6]
+                    move_sprite(board, 7, 6, start_row, start_column, piece)
                     if scan_check(board, king) == False:
-                        valid_squares.append((7, 6))
+                        destination_square = board[7][5]
+                        move_sprite(board, 7, 5, start_row, start_column, piece)
+                        if scan_check(board, king) == False:
+                            valid_squares.append((7, 6))
+                        board[7][5] = destination_square
+                        board[start_row][start_column] = piece
+
+                    board[7][6] = destination_square
+                    board[start_row][start_column] = piece
         elif king in black_pieces:
             if not black_king_moved:
-                if not white_a_rook_moved and castle_left:
+                if not black_a_rook_moved and castle_left:
+                    destination_square = board[0][3]
+                    move_sprite(board, 0, 3, start_row, start_column, piece)
                     if scan_check(board, king) == False:
-                        valid_squares.append((0, 2))
-                elif not white_h_rook_moved and castle_right:
+                        destination_square = board[0][2]
+                        move_sprite(board, 0, 2, start_row, start_column, piece)
+                        if scan_check(board, king) == False:
+                            valid_squares.append((0, 2))
+                        board[0][2] = destination_square
+                        board[start_row][start_column] = piece
+
+                    board[0][3] = destination_square
+                    board[start_row][start_column] = piece
+                elif not black_h_rook_moved and castle_right:
+                    destination_square = board[0][6]
+                    move_sprite(board, 0, 6, start_row, start_column, piece)
                     if scan_check(board, king) == False:
-                        valid_squares.append((0, 6))
+                        destination_square = board[0][5]
+                        move_sprite(board, 0, 5, start_row, start_column, piece)
+                        if scan_check(board, king) == False:
+                            valid_squares.append((0, 6))
+                        board[0][5] = destination_square
+                        board[start_row][start_column] = piece
+
+                    board[0][6] = destination_square
+                    board[start_row][start_column] = piece
 
     if len(valid_squares) > 0:
         return valid_squares
@@ -798,6 +838,12 @@ while running:
                                 board[7][0] = "Empty"
                             white_king_moved = True
                         else:
+                            if clicked_column == starting_column + 2:
+                                board[0][5] = "Black Rook"
+                                board[0][7] = "Empty"
+                            elif clicked_column == starting_column - 2:
+                                board[0][3] = "Black Rook"
+                                board[0][0] = "Empty"
                             black_king_moved = True
                         move_made = True
 
