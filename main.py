@@ -12,11 +12,10 @@ GREEN = [118, 150, 86]
 text_font = py.font.SysFont("Arial", 50)
 
 
-py.display.set_caption("Test1")
+py.display.set_caption("Chess")
 running = True
 clock = py.time.Clock()
 clock.tick(60)
-
 
 def draw_board():
     """Draw the board"""
@@ -287,17 +286,17 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
         castle_column1 = start_column - 1
         castle_column2 = start_column + 1
         if piece in white_pieces and start_column == 4:
-            while board[7][castle_column1] != 'White Rook':
+            while castle_column1 > -1 and board[7][castle_column1] != 'White Rook':
                 piece_between_left.append(board[7][castle_column1])
                 castle_column1 -= 1
-            while board[7][castle_column2] != 'White Rook':
+            while castle_column2 < 8 and board[7][castle_column2] != 'White Rook':
                 piece_between_right.append(board[7][castle_column2])
                 castle_column2 += 1
         elif piece in black_pieces and start_column == 4:
-            while board[0][castle_column1] != 'Black Rook':
+            while castle_column1> -1 and board[0][castle_column1] != 'Black Rook':
                 piece_between_left.append(board[0][castle_column1])
                 castle_column1 -= 1
-            while board[0][castle_column2] != 'Black Rook':
+            while castle_column2 < 8 and board[0][castle_column2] != 'Black Rook':
                 piece_between_right.append(board[0][castle_column2])
                 castle_column2 += 1
 
@@ -306,7 +305,7 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
         elif all(items == "Empty" for items in piece_between_right):
             castle_right = True
 
-        if king in white_pieces:
+        if king in white_pieces and scan_check(board, king) == False:
             if not white_king_moved:
                 if not white_a_rook_moved and castle_left:
                     destination_square = board[7][3]
@@ -334,7 +333,7 @@ def get_king_moves(start_row, start_column, board, ally_pieces, enemy_king):
 
                     board[7][6] = destination_square
                     board[start_row][start_column] = piece
-        elif king in black_pieces:
+        elif king in black_pieces and scan_check(board, king) == False:
             if not black_king_moved:
                 if not black_a_rook_moved and castle_left:
                     destination_square = board[0][3]
@@ -553,7 +552,8 @@ def scan_checkmate(board, black_pieces, white_pieces, turn):
             return True
         else:
             return False
-                    
+
+
 def scan_stalemate(board, black_pieces, white_pieces, turn):
     valid_moves = []
     if turn == "White":
@@ -589,7 +589,15 @@ def scan_stalemate(board, black_pieces, white_pieces, turn):
                             if get_pawn_moves(row, column, board, ally_piece, enemy_king) is not None:
                                 valid_moves.extend(get_pawn_moves(row, column, board, ally_piece, enemy_king))
 
-        if valid_moves == []:
+        board_pieces = []
+        for r in range(8):
+            for c in range (8):
+                if board[r][c] != "Empty":
+                    board_pieces.append(board[r][c])
+
+        if board_pieces == ["White King", "Black King"] or board_pieces == ["Black King", "White King"]:
+            return True
+        elif valid_moves == []:
             return True
         else:
             return False
@@ -605,9 +613,28 @@ def promote_pawn(piece, click_row):
         
     return False
 
+
+def castle(king, starting_column):
+    if king == "White King":
+        if clicked_column == starting_column + 2:
+            board[7][5] = "White Rook"
+            board[7][7] = "Empty"
+        elif clicked_column == starting_column - 2:
+            board[7][3] = "White Rook"
+            board[7][0] = "Empty"
+    else:
+        if clicked_column == starting_column + 2:
+            board[0][5] = "Black Rook"
+            board[0][7] = "Empty"
+        elif clicked_column == starting_column - 2:
+            board[0][3] = "Black Rook"
+            board[0][0] = "Empty"
+
+
 def draw_text(text, font, text_color, x, y):
     image = font.render(text, True, text_color, "white")
     screen.blit(image, (x, y))
+
 
 # position of pieces on the board
 board = [
@@ -620,8 +647,9 @@ board = [
     ["White Pawn", "White Pawn", "White Pawn", "White Pawn", "White Pawn", "White Pawn", "White Pawn", "White Pawn",],
     ["White Rook", "White Knight", "White Bishop", "White Queen", "White King", "White Bishop", "White Knight", "White Rook"]
 ]
-# import chess pieces images
 
+
+# import chess pieces images
 images = {}
 black_pieces = ["Black King", "Black Queen", "Black Bishop", "Black Knight", "Black Rook", "Black Pawn"]
 white_pieces = ["White King", "White Queen", "White Bishop", "White Knight", "White Rook", "White Pawn"]
@@ -729,7 +757,7 @@ while running:
                                 valid_moves = get_king_moves(clicked_row, clicked_column, board, black_pieces, "White King")
 
             else:
-                # After the second click, the previous location of the piece is stored in starting_row and swtarting_column
+                # After the second click, the previous location of the piece is stored in starting_row and starting_column
                 starting_row, starting_column = clicked_square
 
                 move_piece = board[starting_row][starting_column]
@@ -760,7 +788,6 @@ while running:
                         else:
                             move_made = True
                             
-
                 # Rook movement
                 if move_piece == "White Rook" or move_piece == "Black Rook":
                     if move_piece == "White Rook":
@@ -829,21 +856,10 @@ while running:
 
                     if valid_squares is not None and (clicked_row, clicked_column) in valid_squares:
                         move_sprite(board, clicked_row, clicked_column, starting_row, starting_column, move_piece)
+                        castle(king, starting_column)
                         if move_piece == "White King":
-                            if clicked_column == starting_column + 2:
-                                board[7][5] = "White Rook"
-                                board[7][7] = "Empty"
-                            elif clicked_column == starting_column - 2:
-                                board[7][3] = "White Rook"
-                                board[7][0] = "Empty"
                             white_king_moved = True
                         else:
-                            if clicked_column == starting_column + 2:
-                                board[0][5] = "Black Rook"
-                                board[0][7] = "Empty"
-                            elif clicked_column == starting_column - 2:
-                                board[0][3] = "Black Rook"
-                                board[0][0] = "Empty"
                             black_king_moved = True
                         move_made = True
 
@@ -894,7 +910,6 @@ while running:
             screen.blit(images[piece], (x, y))
 
         
-
     if valid_moves is not None:
         for r, c in valid_moves:
             center_x = (c * 50) + 25
